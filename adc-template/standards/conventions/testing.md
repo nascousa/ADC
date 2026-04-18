@@ -6,6 +6,7 @@
 
 ## Common Test and Software Quality Strategies
 - **Risk-Based Test Pyramid**: Prioritize many unit tests, targeted integration tests, and a small number of end-to-end smoke tests.
+- **Optional VS Code Integrated Browser**: During manual verification or UI-focused test debugging, you MAY use the VS Code built-in Integrated Browser when needed.
 - **Branch Coverage Focus**: Measure branch coverage in addition to line coverage for critical logic and decision paths.
 - **Critical-Path Coverage Targets**: Apply stricter coverage expectations for security-sensitive and business-critical modules.
 - **Changed-Code Accountability**: New or modified behavior MUST include corresponding tests in the same change set.
