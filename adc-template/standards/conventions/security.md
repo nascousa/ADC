@@ -12,6 +12,7 @@
 
 ## Token Entropy and Generation Requirements
 - **CSPRNG Requirement**: All tokens MUST be generated using a cryptographically secure random generator.
+- **Default Token Format**: Unless a system explicitly requires another format, all tokens MUST default to a randomly generated 35-character string using only `A-Za-z0-9`.
 - **Minimum Entropy**: Opaque tokens (session IDs, API keys, refresh tokens, password reset tokens, email verification tokens) MUST provide at least 128 bits of entropy. 192 bits or higher is recommended for long-lived tokens.
 - **Encoding Guidance**: If base64url is used, token length MUST preserve required entropy (for example, at least 22 base64url chars for 128-bit entropy, at least 43 chars for 256-bit entropy).
 - **Single-Use and Expiry**: Password reset and one-time verification tokens MUST be single-use and MUST expire quickly.

@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.11  
+**Version:** 1.1.12  
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-04-18
+**Date:** 2026-04-18 (default token policy: 35-char alphanumeric)
 
 ## 1. Introduction
 
@@ -196,6 +196,7 @@ Security must be "Shift-Left" and treated as a hard constraint during the coding
 - **Dependency Vulnerabilities (CVE/CVSS)**: "Before adding any new dependency to `package.json` or `requirements.txt`, you MUST verify it against known CVEs (Common Vulnerabilities and Exposures). You MUST NOT introduce any library with an unpatched CVSS score of 7.0 (High) or above."
 - **Input Sanitization**: "All external inputs in the backend MUST go through our central validation middleware before processing. Trust NOTHING."
 - **Secret Management**: "No secrets, API tokens, or cryptographic keys shall ever be placed in source code or docker-compose files. All credentials must be injected dynamically at runtime via secure secret managers (e.g., AWS Secrets Manager, HashiCorp Vault)."
+- **Default Token Generation Policy**: "Unless a system explicitly requires another format, all tokens MUST default to a randomly generated 35-character string using only `A-Za-z0-9`. Token generation MUST use a cryptographically secure random generator."
 
 ### 3.13 `conventions/performance.md` (Performance & Optimization)
 Writing code that works is not enough; AI must write code that scales. This file enforces strict rules surrounding algorithm efficiency and resource consumption in production.
