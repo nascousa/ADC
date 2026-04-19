@@ -9,14 +9,14 @@ Before starting the application, register with the ContextGraph ecosystem:
 
 ```bash
 # 1. Register this project with ContextGraph
-# Visit: http://192.168.1.239:18080/getstarted
+# Visit: http://localhost:8000/getstarted
 # Follow the guided setup to:
 #   - Register this project in the ContextGraph catalog
 #   - Retrieve MCP server credentials and edge agent token
 #   - Store credentials in .env (see step 2 below)
 
 # 2. Configure ContextGraph environment variables
-echo "CONTEXTGRAPH_MCP_SERVER_URL=http://192.168.1.239:18080/mcp" >> .env
+echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:8000/mcp" >> .env
 echo "CONTEXTGRAPH_EDGE_AGENT_TOKEN=<token-from-getstarted>" >> .env
 echo "CONTEXTGRAPH_PROJECT_ID=<project-id-from-getstarted>" >> .env
 ```
@@ -25,7 +25,7 @@ After ContextGraph Edge Agent and ContextGraph MCP Server are integrated, initia
 
 ```text
 Required one-time bootstrap indexing flow
-1) Ensure mcp-servers.json is configured for the contextgraph-repository server and receives project context from environment variables.
+1) Ensure `mcp-servers.json` contains the `cg-edge-mcp-server` endpoint profile and receives project context from environment variables.
 2) Run a full-project indexing call through ContextGraph MCP using:
 	- project_id: CONTEXTGRAPH_PROJECT_ID
 	- repo_path: repository root
@@ -42,7 +42,7 @@ ADC-compliant projects must keep the `cg-edge-mcp-server` profile enabled in `.a
 ```text
 Quick enable checklist for downstream projects
 1) Copy the ADC template `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` into the target project.
-2) Confirm `cg-edge-mcp-server` exists and points to the project-local ContextGraph MCP entry (`src/contextgraph-mcp/index.js` or equivalent).
+2) Confirm `cg-edge-mcp-server` exists and points to a reachable ContextGraph MCP endpoint (default: `http://localhost:8000/mcp`).
 3) Set environment variables before starting your IDE/agent host:
 	- CONTEXTGRAPH_MCP_TOKEN
 	- CONTEXTGRAPH_EDGE_AGENT_TOKEN
@@ -87,7 +87,7 @@ curl http://localhost:3001/mcp/health
 curl http://localhost:3002/edges/health
 
 # Verify upstream ContextGraph connectivity
-curl http://192.168.1.239:18080/health
+curl http://localhost:8000/health
 ```
 
 

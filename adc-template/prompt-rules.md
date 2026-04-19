@@ -22,6 +22,7 @@
 - Use `contextgraph-edge-agent/` for local task orchestration and session context only.
 - Use `mcp-servers.json` and ContextGraph MCP endpoints for indexed retrieval/integration workflows only.
 - Ensure `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` contains the `cg-edge-mcp-server` entry and keep it enabled by default for ADC-compliant repositories.
+- Do not assume a Node-specific local MCP bootstrap; prefer endpoint-first MCP profiles and keep integration language/runtime-agnostic unless the repository explicitly provides a local server implementation.
 - ContextGraph MCP must not replace local compile, lint, unit test, or integration test execution.
 - Treat scratchpad/task outputs as operational context, not canonical product truth.
 - Canonical rules must remain in `.adc/planning/`, `.adc/standards/`, and `.adc/knowledge/`.

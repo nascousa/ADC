@@ -1,6 +1,6 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.9  
+**Version:** 1.1.11  
 **Status:** Published  
 **Author:** Nate Scott  
 **Date:** 2026-04-18
@@ -257,6 +257,7 @@ To achieve true project portability for AI Agents, the project must ship with it
 - **Portability**: "When cloning this repository on a new machine, the user or AI can directly import `.adc/mcp/mcp-servers.json` into their local AI client (like Cursor or Claude Desktop) to instantly gain access to the project's dedicated database connections, API wrappers, or internal corporate context tools."
 - **Constraint**: "Any new external integrations (e.g., adding a PostgreSQL database) MUST be accompanied by an update to the MCP configuration so that future AI agents inherit the ability to query that database directly."
 - **CG Edge MCP Plugin Standard**: "ADC-compliant projects MUST provide a preconfigured `cg-edge-mcp-server` entry in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` so new repositories automatically inherit the ContextGraph Edge MCP Server plugin wiring."
+- **Runtime-Neutral MCP Rule**: "CG Edge MCP integration MUST be endpoint-first and language-agnostic by default. Do not require a Node-specific local entrypoint unless the target repository explicitly ships one."
 - **ContextGraph Bootstrap Indexing**: "After integrating ContextGraph Edge Agent and ContextGraph MCP Server for a project, you MUST initialize one full-project index through ContextGraph before executing feature tasks. Subsequent updates MUST use incremental indexing on changed files."
 - **ContextGraph Policy Rule**: "Use ContextGraph Edge Agent workspace files (`.adc/contextgraph-edge-agent/tasks/`, `.adc/contextgraph-edge-agent/scratchpad/`) for orchestration state only. Canonical requirements and architecture decisions MUST remain in planning/standards/knowledge files."
 - **ContextGraph Execution Rule**: "ContextGraph MCP integrations are for retrieval/indexing and external context operations. Local build/test/deploy execution MUST remain on native project tooling."

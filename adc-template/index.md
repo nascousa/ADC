@@ -18,14 +18,13 @@ It defines the exact rules, constraints, and architecture that AI Agents must fo
 ## Core Modules
 - `src/api`: Core backend services
 - `src/web`: Frontend React application
-- `src/contextgraph-mcp`: ContextGraph MCP Server (local implementation)
 - `src/contextgraph-edge-agent`: ContextGraph Edge Agent (local execution and orchestration)
 
 ## Required Integrations
 This project **MUST** integrate with the ContextGraph ecosystem:
-- **ContextGraph Project**: Central repository and artifact management system (registration via `http://192.168.1.239:18080/getstarted`)
+- **ContextGraph Project**: Central repository and artifact management system (registration via `http://localhost:8000/getstarted`)
 - **ContextGraph Edge Agent** (`src/contextgraph-edge-agent`): Local execution and orchestration agent
-- **ContextGraph MCP Server** (`src/contextgraph-mcp`): Model Context Protocol server for programmatic ContextGraph access
+- **ContextGraph MCP Server**: Model Context Protocol endpoint for programmatic ContextGraph access (default: `http://localhost:8000/mcp`)
 - **CG Edge MCP Server Plugin Standard**: `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST include a `cg-edge-mcp-server` entry so ADC-based projects can auto-load ContextGraph Edge MCP wiring.
 - **Initial ContextGraph Indexing**: Immediately after ContextGraph Edge Agent + ContextGraph MCP Server integration, run full-project indexing once so retrieval/review tools can access the entire repository context.
 

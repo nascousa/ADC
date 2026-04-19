@@ -45,12 +45,12 @@ It defines the exact rules, constraints, and architecture that AI Agents must fo
 
 ## Required Integrations
 This project **MUST** integrate with the ContextGraph ecosystem:
-- **ContextGraph Project**: Central repository and artifact management system (registration via `http://192.168.1.239:18080/getstarted`)
+- **ContextGraph Project**: Central repository and artifact management system (registration via `http://localhost:8000/getstarted`)
 - **ContextGraph Edge Agent** (`src/contextgraph-edge-agent`): Local execution and orchestration agent
-- **ContextGraph MCP Server** (`src/contextgraph-mcp`): Model Context Protocol server for programmatic ContextGraph access
+- **ContextGraph MCP Server**: Model Context Protocol endpoint for programmatic ContextGraph access (default: `http://localhost:8000/mcp`)
 - **Initial ContextGraph Indexing**: Immediately after ContextGraph Edge Agent + ContextGraph MCP Server integration, run full-project indexing once so retrieval/review tools can access the entire repository context.
 
-Both ContextGraph services are implemented locally within this project and must be started during bootstrap.
+ContextGraph MCP access is endpoint-first by default. A local MCP implementation is optional and repository-specific.
 
 ## Environment Requirements
 Refer to `bootstrap.md` for exact start-up commands.
@@ -68,14 +68,14 @@ Before starting the application, register with the ContextGraph ecosystem:
 
 ```bash
 # 1. Register this project with ContextGraph
-# Visit: http://192.168.1.239:18080/getstarted
+# Visit: http://localhost:8000/getstarted
 # Follow the guided setup to:
 #   - Register this project in the ContextGraph catalog
 #   - Retrieve MCP server credentials and edge agent token
 #   - Store credentials in .env (see step 2 below)
 
 # 2. Configure ContextGraph environment variables
-echo "CONTEXTGRAPH_MCP_SERVER_URL=http://192.168.1.239:18080/mcp" >> .env
+echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:8000/mcp" >> .env
 echo "CONTEXTGRAPH_EDGE_AGENT_TOKEN=<token-from-getstarted>" >> .env
 echo "CONTEXTGRAPH_PROJECT_ID=<project-id-from-getstarted>" >> .env
 ```
@@ -84,7 +84,7 @@ After ContextGraph Edge Agent and ContextGraph MCP Server are integrated, initia
 
 ```text
 Required one-time bootstrap indexing flow
-1) Ensure mcp-servers.json is configured for the contextgraph-repository server and receives project context from environment variables.
+1) Ensure `mcp-servers.json` contains the `cg-edge-mcp-server` endpoint profile and receives project context from environment variables.
 2) Run a full-project indexing call through ContextGraph MCP using:
    - project_id: CONTEXTGRAPH_PROJECT_ID
    - repo_path: repository root
@@ -104,8 +104,8 @@ npm install
 cp .env.example .env
 # (Edit .env with values from ContextGraph registration above)
 
-# 5. Start ContextGraph services
-npm run contextgraph-mcp:start      # Starts src/contextgraph-mcp server (default: http://localhost:3001/mcp)
+# 5. Start ContextGraph services (if this repository includes local implementations)
+npm run contextgraph-mcp:start      # Optional local MCP bridge for repos that ship one
 npm run contextgraph-edge:start     # Starts src/contextgraph-edge-agent service (default: http://localhost:3002/edges)
 
 # 6. Start backing services (e.g. database, redis)
@@ -130,7 +130,7 @@ curl http://localhost:3001/mcp/health
 curl http://localhost:3002/edges/health
 
 # Verify upstream ContextGraph connectivity
-curl http://192.168.1.239:18080/health
+curl http://localhost:8000/health
 ```
 '@;
 
@@ -156,6 +156,7 @@ curl http://192.168.1.239:18080/health
 ## ContextGraph Use Policy
 - Use `contextgraph-edge-agent/` for local task orchestration and session context only.
 - Use `mcp-servers.json` and ContextGraph MCP endpoints for indexed retrieval/integration workflows only.
+- Do not assume a Node-specific local MCP bootstrap; prefer endpoint-first MCP profiles and keep integration language/runtime-agnostic unless the repository explicitly provides a local server implementation.
 - ContextGraph MCP must not replace local compile, lint, unit test, or integration test execution.
 - Treat scratchpad/task outputs as operational context, not canonical product truth.
 - Canonical rules must remain in `.adc/planning/`, `.adc/standards/`, and `.adc/knowledge/`.
@@ -206,13 +207,14 @@ curl http://192.168.1.239:18080/health
 - **Rotation Update**: When deploy keys rotate, `docs/deploy_key.md` MUST be updated in the same change set.
 
 ## ContextGraph Integration Policy
-- **Authoritative Onboarding URL**: Integration with ContextGraph MUST follow `http://192.168.1.239:18080/getstarted` as the single source of setup instructions.
+- **Authoritative Onboarding URL**: Integration with ContextGraph MUST follow `http://localhost:8000/getstarted` as the single source of setup instructions.
 - **No Unreviewed Deviation**: Agents and developers MUST NOT use alternate ContextGraph onboarding flows unless explicitly approved in the same PR description.
 - **Traceability Requirement**: Any PR that introduces or changes ContextGraph integration MUST include a short "ContextGraph integration notes" section describing what step(s) from the onboarding URL were applied.
 - **MCP Alignment**: If ContextGraph integration adds or changes external service endpoints or credentials, `mcp-servers.json` MUST be updated in the same change set.
 
 ## ContextGraph Edge Agent and ContextGraph MCP Use Policy
 - **Responsibility Split**: `contextgraph-edge-agent/` is for local orchestration artifacts (task queues, scratchpad notes, MCP wiring). ContextGraph MCP is for programmatic integration/retrieval against ContextGraph services.
+- **Runtime Neutrality**: MCP wiring MUST be language-agnostic by default. Do not require a Node-specific local entrypoint unless that repository explicitly ships and maintains one.
 - **Execution Policy**: ContextGraph MCP MUST NOT be used to replace local compile, lint, unit test, or integration test execution. Build/test must run through project-native tooling.
 - **Authority Policy**: Outputs from ContextGraph Edge Agent scratchpad/tasks are operational context, not product truth. Canonical product rules remain in constitution/convention/planning files.
 - **Network Policy**: Local ContextGraph services are expected on localhost endpoints; upstream ContextGraph access MUST use the configured upstream URL and approved credentials only.
