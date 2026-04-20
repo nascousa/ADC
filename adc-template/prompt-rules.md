@@ -10,6 +10,13 @@
 - Document progress, failed attempts, and environment issues in `.adc/contextgraph-edge-agent/scratchpad/session.md` before concluding a task.
 - Keep outputs deterministic for the same symbol and unchanged repository state.
 
+## ADC Standard Version Tracking
+- The upstream ADC standard is maintained at `https://github.com/nasco-microsoft/adc`.
+- Periodically check for new releases and compare the upstream `adc-template/index.md` version against the local `.adc/index.md` version.
+- When a newer upstream version is detected, review the changelog and sync the following files into the local `.adc/` directory: `index.md`, `prompt-rules.md`, `bootstrap.md`, and any updated files under `standards/`, `knowledge/`, and `planning/`.
+- After syncing, increment the local `.adc/index.md` version to match upstream and update the date field. Commit with the message format: `docs(adc): sync with upstream ADC vX.Y.Z`.
+- Project-specific overrides added to local `.adc/prompt-rules.md` MUST be preserved and re-applied after each sync.
+
 ## Repository and Workflow Rules
 - For new features, write tests first.
 - Keep source logic in `src/`, scripts in `src/scripts/`, tests in `src/tests/`, and docs in `docs/`.
