@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.12  
+**Version:** 1.1.13  
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-04-18 (default token policy: 35-char alphanumeric)
+**Date:** 2026-04-30 (default token policy: 35-char alphanumeric)
 
 ## 1. Introduction
 
