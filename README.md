@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.13  
+**Version:** 1.1.14  
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-04-30 (default token policy: 35-char alphanumeric)
+**Date:** 2026-05-07 (ContextGraph MCP SSE default alignment)
 
 ## 1. Introduction
 
@@ -259,6 +259,7 @@ To achieve true project portability for AI Agents, the project must ship with it
 - **Constraint**: "Any new external integrations (e.g., adding a PostgreSQL database) MUST be accompanied by an update to the MCP configuration so that future AI agents inherit the ability to query that database directly."
 - **CG Edge MCP Plugin Standard**: "ADC-compliant projects MUST provide a preconfigured `cg-edge-mcp-server` entry in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` so new repositories automatically inherit the ContextGraph Edge MCP Server plugin wiring."
 - **Runtime-Neutral MCP Rule**: "CG Edge MCP integration MUST be endpoint-first and language-agnostic by default. Do not require a Node-specific local entrypoint unless the target repository explicitly ships one."
+- **Default ContextGraph MCP Endpoint**: "For the local dev ContextGraph API profile, use the SSE MCP endpoint `http://localhost:8001/mcp/sse` with `Authorization` and `X-Project-ID` headers."
 - **ContextGraph Bootstrap Indexing**: "After integrating ContextGraph Edge Agent and ContextGraph MCP Server for a project, you MUST initialize one full-project index through ContextGraph before executing feature tasks. Subsequent updates MUST use incremental indexing on changed files."
 - **ContextGraph Policy Rule**: "Use ContextGraph Edge Agent workspace files (`.adc/contextgraph-edge-agent/tasks/`, `.adc/contextgraph-edge-agent/scratchpad/`) for orchestration state only. Canonical requirements and architecture decisions MUST remain in planning/standards/knowledge files."
 - **ContextGraph Execution Rule**: "ContextGraph MCP integrations are for retrieval/indexing and external context operations. Local build/test/deploy execution MUST remain on native project tooling."

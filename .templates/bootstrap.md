@@ -16,7 +16,7 @@ Before starting the application, register with the ContextGraph ecosystem:
 #   - Store credentials in .env (see step 2 below)
 
 # 2. Configure ContextGraph environment variables
-echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:8000/mcp" >> .env
+echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:8001/mcp/sse" >> .env
 echo "CONTEXTGRAPH_EDGE_AGENT_TOKEN=<token-from-getstarted>" >> .env
 echo "CONTEXTGRAPH_PROJECT_ID=<project-id-from-getstarted>" >> .env
 ```
@@ -42,7 +42,7 @@ ADC-compliant projects must keep the `cg-edge-mcp-server` profile enabled in `.a
 ```text
 Quick enable checklist for downstream projects
 1) Copy the ADC template `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` into the target project.
-2) Confirm `cg-edge-mcp-server` exists and points to a reachable ContextGraph MCP endpoint (default: `http://localhost:8000/mcp`).
+2) Confirm `cg-edge-mcp-server` exists and points to a reachable ContextGraph MCP endpoint (default local dev SSE endpoint: `http://localhost:8001/mcp/sse`).
 3) Set environment variables before starting your IDE/agent host:
 	- CONTEXTGRAPH_MCP_TOKEN
 	- CONTEXTGRAPH_EDGE_AGENT_TOKEN
@@ -80,14 +80,14 @@ npm run dev
 Once running, verify local ContextGraph services are reachable:
 
 ```bash
-# Check local MCP server health (src/contextgraph-mcp)
+# Check optional repository-local MCP bridge health (only if this repo ships one)
 curl http://localhost:3001/mcp/health
 
 # Check local edge agent health (src/contextgraph-edge-agent)
 curl http://localhost:3002/edges/health
 
-# Verify upstream ContextGraph connectivity
-curl http://localhost:8000/health
+# Verify ContextGraph local dev API connectivity
+curl http://localhost:8001/health
 ```
 
 

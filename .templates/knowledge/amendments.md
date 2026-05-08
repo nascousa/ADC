@@ -6,5 +6,6 @@
 - **2026-04-18**: Added `cg-edge-mcp-server` as the ADC baseline MCP plugin profile so downstream ADC projects auto-inherit ContextGraph Edge MCP Server wiring and guidance.
 - **2026-04-18**: Updated CG Edge MCP baseline to endpoint-first, language-agnostic wiring so repositories are not forced to provide a local Node entrypoint.
 - **2026-04-18**: Added default token generation policy: unless explicitly overridden by target system requirements, tokens MUST use cryptographically random 35-character values restricted to `A-Za-z0-9`.
+- **2026-05-07**: Corrected the CG Edge MCP default to the local dev SSE endpoint `http://localhost:8001/mcp/sse` and required Authorization/X-Project-ID headers in the standard profile.
 
 

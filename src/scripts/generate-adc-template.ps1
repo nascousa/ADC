@@ -47,7 +47,7 @@ It defines the exact rules, constraints, and architecture that AI Agents must fo
 This project **MUST** integrate with the ContextGraph ecosystem:
 - **ContextGraph Project**: Central repository and artifact management system (registration via `http://localhost:8000/getstarted`)
 - **ContextGraph Edge Agent** (`src/contextgraph-edge-agent`): Local execution and orchestration agent
-- **ContextGraph MCP Server**: Model Context Protocol endpoint for programmatic ContextGraph access (default: `http://localhost:8000/mcp`)
+- **ContextGraph MCP Server**: Model Context Protocol endpoint for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:8001/mcp/sse`)
 - **Initial ContextGraph Indexing**: Immediately after ContextGraph Edge Agent + ContextGraph MCP Server integration, run full-project indexing once so retrieval/review tools can access the entire repository context.
 
 ContextGraph MCP access is endpoint-first by default. A local MCP implementation is optional and repository-specific.
@@ -75,7 +75,7 @@ Before starting the application, register with the ContextGraph ecosystem:
 #   - Store credentials in .env (see step 2 below)
 
 # 2. Configure ContextGraph environment variables
-echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:8000/mcp" >> .env
+echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:8001/mcp/sse" >> .env
 echo "CONTEXTGRAPH_EDGE_AGENT_TOKEN=<token-from-getstarted>" >> .env
 echo "CONTEXTGRAPH_PROJECT_ID=<project-id-from-getstarted>" >> .env
 ```
@@ -129,8 +129,8 @@ curl http://localhost:3001/mcp/health
 # Check local edge agent health (src/contextgraph-edge-agent)
 curl http://localhost:3002/edges/health
 
-# Verify upstream ContextGraph connectivity
-curl http://localhost:8000/health
+# Verify ContextGraph local dev API connectivity
+curl http://localhost:8001/health
 ```
 '@;
 
@@ -218,6 +218,7 @@ curl http://localhost:8000/health
 - **Execution Policy**: ContextGraph MCP MUST NOT be used to replace local compile, lint, unit test, or integration test execution. Build/test must run through project-native tooling.
 - **Authority Policy**: Outputs from ContextGraph Edge Agent scratchpad/tasks are operational context, not product truth. Canonical product rules remain in constitution/convention/planning files.
 - **Network Policy**: Local ContextGraph services are expected on localhost endpoints; upstream ContextGraph access MUST use the configured upstream URL and approved credentials only.
+- **Default MCP Endpoint**: Local dev MCP clients SHOULD use `http://localhost:8001/mcp/sse` unless the ContextGraph deployment explicitly advertises a different MCP SSE endpoint.
 - **Secret Policy**: Tokens and project identifiers (`CONTEXTGRAPH_MCP_TOKEN`, `CONTEXTGRAPH_EDGE_AGENT_TOKEN`, `CONTEXTGRAPH_PROJECT_ID`) MUST be injected via environment variables and never committed to repository files.
 - **Change Policy**: Any PR changing ContextGraph integration behavior MUST update both `bootstrap.md` and `mcp-servers.json`, and include validation notes.
 '@;
@@ -233,6 +234,7 @@ curl http://localhost:8000/health
 *All changes to the rules inside the `.adc` directory MUST be proposed via PR with the `[AMENDMENT]` prefix. It MUST NOT be modified autonomously without human ratification.*
 
 - **2026-03-13**: Digital Constitution initial ratification. V1.0.0 created.
+- **2026-05-07**: Corrected the CG Edge MCP default to the local dev SSE endpoint `http://localhost:8001/mcp/sse` and required Authorization/X-Project-ID headers in the standard profile.
 '@;
 
     "conventions\security.md" = @'
@@ -316,9 +318,22 @@ curl http://localhost:8000/health
 - [ ] Are Docker CPU/Memory resource limits properly set as environment variables?
 '@;
 
-    "mcp\mcp-servers.json" = @'
+        "contextgraph-edge-agent\mcp\mcp-servers.json" = @'
 {
   "mcpServers": {
+        "cg-edge-mcp-server": {
+            "transport": "http",
+            "url": "http://localhost:8001/mcp/sse",
+            "headers": {
+                "Authorization": "Bearer ${CONTEXTGRAPH_MCP_TOKEN}",
+                "X-Project-ID": "${CONTEXTGRAPH_PROJECT_ID}"
+            },
+            "env": {
+                "CONTEXTGRAPH_MCP_TOKEN": "${CONTEXTGRAPH_MCP_TOKEN}",
+                "CONTEXTGRAPH_PROJECT_ID": "${CONTEXTGRAPH_PROJECT_ID}"
+            },
+            "description": "CG Edge MCP Server endpoint profile for ADC projects (language-agnostic MCP wiring)"
+        },
     "local-postgres": {
       "command": "npx",
       "args": ["-y", "@modelcontextprotocol/server-postgres", "postgresql://localhost/mydb"]

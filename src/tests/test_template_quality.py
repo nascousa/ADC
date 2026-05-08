@@ -9,7 +9,7 @@ def _read(rel_path: str) -> str:
 
 
 def test_prompt_rules_has_core_quality_sections() -> None:
-    content = _read("adc-template/prompt-rules.md")
+    content = _read(".templates/prompt-rules.md")
 
     required_sections = [
         "## Mandatory Core Rules",
@@ -25,7 +25,7 @@ def test_prompt_rules_has_core_quality_sections() -> None:
 
 
 def test_security_convention_has_patch_and_update_strategies() -> None:
-    content = _read("adc-template/standards/conventions/security.md")
+    content = _read(".templates/standards/conventions/security.md")
 
     required_entries = [
         "## Version, Update, and Patch Security Strategies",
@@ -40,7 +40,7 @@ def test_security_convention_has_patch_and_update_strategies() -> None:
 
 
 def test_testing_convention_has_quality_strategy_section() -> None:
-    content = _read("adc-template/standards/conventions/testing.md")
+    content = _read(".templates/standards/conventions/testing.md")
 
     required_entries = [
         "## Common Test and Software Quality Strategies",
@@ -55,7 +55,7 @@ def test_testing_convention_has_quality_strategy_section() -> None:
 
 
 def test_devops_convention_has_cicd_github_webhook_policy() -> None:
-    content = _read("adc-template/standards/conventions/devops.md")
+    content = _read(".templates/standards/conventions/devops.md")
 
     required_entries = [
         "## CI/CD Policy (GitHub + Webhook Deploy)",
@@ -72,7 +72,7 @@ def test_devops_convention_has_cicd_github_webhook_policy() -> None:
 
 
 def test_cicd_preflight_gate_policy_is_explicit() -> None:
-    runbook = _read("adc-template/standards/runbooks/002-cicd-github-webhook-debug.md")
+    runbook = _read(".templates/standards/runbooks/002-cicd-github-webhook-debug.md")
 
     runbook_required_entries = [
         "Preflight Gate",
@@ -92,7 +92,7 @@ def test_all_powershell_scripts_live_under_src_scripts() -> None:
 
 
 def test_devops_convention_has_required_compose_healthcheck_block() -> None:
-    content = _read("adc-template/standards/conventions/devops.md")
+    content = _read(".templates/standards/conventions/devops.md")
 
     required_entries = [
         "## Docker Compose Health Check Policy",
@@ -109,5 +109,23 @@ def test_devops_convention_has_required_compose_healthcheck_block() -> None:
 
     for entry in required_entries:
         assert entry in content
+
+
+def test_contextgraph_mcp_template_uses_local_dev_sse_endpoint_and_headers() -> None:
+    mcp_profile = _read(".templates/contextgraph-edge-agent/mcp/mcp-servers.json")
+    bootstrap = _read(".templates/bootstrap.md")
+    devops = _read(".templates/standards/conventions/devops.md")
+
+    required_mcp_entries = [
+        '"cg-edge-mcp-server"',
+        '"url": "http://localhost:8001/mcp/sse"',
+        '"Authorization": "Bearer ${CONTEXTGRAPH_MCP_TOKEN}"',
+        '"X-Project-ID": "${CONTEXTGRAPH_PROJECT_ID}"',
+    ]
+    for entry in required_mcp_entries:
+        assert entry in mcp_profile
+
+    assert "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:8001/mcp/sse" in bootstrap
+    assert "http://localhost:8001/mcp/sse" in devops
 
 
