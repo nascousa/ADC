@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.14  
+**Version:** 1.1.15
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-05-07 (ContextGraph MCP SSE default alignment)
+**Date:** 2026-05-15 (nascousa ADC repository migration)
 
 ## 1. Introduction
 
@@ -233,8 +233,8 @@ This file establishes strict boundaries for where certain types of files must li
 - **Utility Scripts**: "All supplementary bash, python, or Node.js scripts used for building, deploying, or local development MUST be placed in `src/script/` (or `script/` if a project has top-level scripts). No dangling scripts should exist at the project root."
 - **Versioning Constraints (`.gitignore`)**: "A `.gitignore` file MUST exist at the root. AI assistants MUST automatically ignore common local cache, IDE configs, dependency folders (`node_modules`), logs, and compiled outputs unless explicitly instructed otherwise."
 - **CI/CD & Workflows (`.github/`)**: "All GitHub Actions, issue templates, and pull request templates MUST be centralized in the `.github/` directory. AI agents MUST respect and update these workflows when adding new deployment or testing stages."
-- **Push Protocol Fallback**: "Repository checkins should use HTTPS as the default push protocol. If HTTPS push fails due to transient credential or network issues, retry over SSH as the fallback path. This ensures build/test workflows remain unblocked while preserving protocol resiliency."
-- **Repository URL Prefix Policy**: "All project repositories MUST use the GitHub organization prefix `https://github.com/nasco_microsoft/` and append the project repository name."
+- **Push Protocol Policy**: "ADC source checkins MUST use the SSH remote `git@github.com:nascousa/ADC.git`. Do not push ADC source changes to `nasco_microsoft` remotes."
+- **Repository URL Policy**: "ADC source distribution and checkins MUST target `git@github.com:nascousa/ADC.git`; future ADC changes MUST NOT check in to `nasco_microsoft`."
 - **Temporary Data**: "Any runtime logs, uploads, or temporary artifacts MUST be written to `src/log/` or `tmp/` respectively. Both paths MUST be explicitly added to `.gitignore`."
 - **Testing Separation**: "All automated tests MUST be placed in an isolated `tests/` directory at the project root. Tests should mirror the `src/` directory structure but must never be mixed within the application source files."
 
