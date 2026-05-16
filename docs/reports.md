@@ -19,7 +19,7 @@ This report captures the latest repository structure and convention updates requ
 
 ## Current Repository Structure
 - Source code package: `src/backend/`
-- Test suite: `src/tests/`
+- Test suite: `tests/`
 - Operational scripts: `src/scripts/`
 - Runtime logs directory: `src/logs/`
 - Public/project documentation: `docs/`

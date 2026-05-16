@@ -148,7 +148,7 @@ curl http://localhost:8001/health
 
 ## Repository and Workflow Rules
 - For new features, write tests first.
-- Keep source logic in `src/`, scripts in `src/scripts/`, tests in `src/tests/`, and docs in `docs/`.
+- Keep source logic in `src/`, scripts in `src/scripts/`, tests in `tests/`, and docs in `docs/`.
 - Do not commit secrets, tokens, or private keys.
 - All Docker commands must use remote daemon `tcp://192.168.1.239:2375` via `DOCKER_HOST`.
 - Never commit directly to `main`; use a `dev/*` branch and merge through review.

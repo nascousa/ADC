@@ -19,7 +19,7 @@
 
 ## Repository and Workflow Rules
 - For new features, write tests first.
-- Keep source logic in `src/`, scripts in `src/scripts/`, tests in `src/tests/`, and docs in `docs/`.
+- Keep source logic in `src/`, scripts in `src/scripts/`, tests in `tests/`, and docs in `docs/`.
 - Do not commit secrets, tokens, or private keys.
 - Unless a target system explicitly requires another format, all tokens MUST default to cryptographically random 35-character strings using only `A-Za-z0-9`.
 - All Docker commands must use remote daemon `tcp://192.168.1.239:2375` via `DOCKER_HOST`.
