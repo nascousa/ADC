@@ -32,11 +32,8 @@ This report captures the latest repository structure and convention updates requ
 - Changes above were applied to repository files and conventions so future generated templates align with the same structure.
 
 ## Security Exception Register
-- ID: `CVE-2026-4539`
-- Package: `pygments` (`2.19.2`)
-- Scope: Temporary CI ignore in `pip-audit` only.
-- Expiry: `2026-04-15` (hard-fail enforced in CI after this date).
-- Owner: Repository maintainers.
-- Required action: remove ignore and upgrade to a fixed version as soon as upstream publishes a patched release.
+- No active temporary dependency audit exceptions.
+- The expired `CVE-2026-4539` pip-audit ignore was removed from CI.
+- FastAPI is bounded below the audited `0.136.3` release until upstream packaging is clean.
 
 

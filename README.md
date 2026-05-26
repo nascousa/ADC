@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.18
+**Version:** 1.1.19
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-05-26 (Default web app debugging, stack, CGA reporting, and indexing standards added)
+**Date:** 2026-05-26 (CPMD skill added and expired dependency audit exception removed)
 
 ## 1. Introduction
 
