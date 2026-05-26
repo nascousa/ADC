@@ -117,16 +117,16 @@ def test_contextgraph_mcp_template_uses_local_dev_sse_endpoint_and_headers() -> 
     devops = _read(".templates/standards/conventions/devops.md")
 
     required_mcp_entries = [
-        '"cg-edge-mcp-server"',
-        '"url": "http://localhost:8001/mcp/sse"',
+        '"cga-mcp-server"',
+        '"url": "http://localhost:18001/mcp/sse"',
         '"Authorization": "Bearer ${CONTEXTGRAPH_MCP_TOKEN}"',
         '"X-Project-ID": "${CONTEXTGRAPH_PROJECT_ID}"',
     ]
     for entry in required_mcp_entries:
         assert entry in mcp_profile
 
-    assert "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:8001/mcp/sse" in bootstrap
-    assert "http://localhost:8001/mcp/sse" in devops
+    assert "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:18001/mcp/sse" in bootstrap
+    assert "http://localhost:18001/mcp/sse" in devops
 
 
 def test_generate_adc_template_script_reports_template_generation_to_contextgraph() -> None:

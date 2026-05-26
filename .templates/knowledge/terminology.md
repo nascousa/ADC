@@ -17,11 +17,11 @@ This file defines all domain-specific terminology, abbreviations, and shortcuts 
 
 | Term | Definition |
 |---|---|
-| **ContextGraph** | Central artifact catalog, project registry, and orchestration service; registration follows `http://localhost:8000/getstarted`, while the local dev API runs at `http://localhost:8001` |
-| **ContextGraph MCP Server** | Model Context Protocol endpoint for programmatic ContextGraph access; default local dev SSE endpoint is `http://localhost:8001/mcp/sse` |
+| **ContextGraph** | Central artifact catalog, project registry, and orchestration service; local CGA Admin UI runs at `http://localhost:18001/admin` |
+| **CGA MCP Server** | Model Context Protocol endpoint for programmatic ContextGraph access; default local dev SSE endpoint is `http://localhost:18001/mcp/sse` |
 | **ContextGraph Edge Agent** | Local execution and orchestration agent; workspace stored in `.adc/contextgraph-edge-agent`, implementation in `src/contextgraph-edge-agent` |
-| **CG Edge MCP Server Plugin** | Standard MCP server profile name (`cg-edge-mcp-server`) used by ADC templates for auto-loading ContextGraph Edge MCP wiring |
-| **ContextGraph Getstarted** | Bootstrap endpoint for ContextGraph registration at `http://localhost:8000/getstarted` |
+| **CGA MCP Server Profile** | Standard MCP server profile name (`cga-mcp-server`) used by ADC templates for auto-loading CGA MCP wiring |
+| **CGA Admin UI** | Local setup surface for project registration and token creation at `http://localhost:18001/admin` |
 
 ## Project Structure Terms
 
