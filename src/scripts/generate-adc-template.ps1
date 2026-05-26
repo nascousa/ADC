@@ -154,6 +154,8 @@ Before starting the application, register with the ContextGraph ecosystem:
 
 # 2. Configure ContextGraph environment variables
 echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:18001/mcp/sse" >> .env
+echo "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity" >> .env
+echo "CONTEXTGRAPH_INDEXING_POLICY=auto-incremental" >> .env
 echo "CONTEXTGRAPH_EDGE_AGENT_TOKEN=<token-from-cga-admin>" >> .env
 echo "CONTEXTGRAPH_PROJECT_ID=<project-id-from-cga-admin>" >> .env
 ```
@@ -168,9 +170,10 @@ Required one-time bootstrap indexing flow
    - repo_path: repository root
    - changed_files: all tracked source and documentation files
 3) Treat indexing as successful only after the ContextGraph service returns a successful completion status.
+4) Configure periodic work briefing reports for service starts, feature milestones, validation runs, and releases.
 ```
 
-For all later changes, run incremental indexing on changed files only.
+For all later changes, run `index_repo_changes(repo_path)` through `cga-mcp-server` so modified source, documentation, configuration, and test content is indexed automatically.
 
 ## Local Development Setup
 
@@ -220,6 +223,8 @@ curl http://localhost:18001/health
 - For every ADC update, increment README version and update README date in the same change.
 - Do not bypass safety checks in `.adc/standards/conventions/security.md`.
 - Follow Test-Driven Development (TDD) in `.adc/standards/conventions/testing.md`.
+- For web page design/debug tasks, use the built-in browser shared page as the default validation surface before considering external browser automation.
+- Default web applications should use FastAPI, PostgreSQL with `pgvector`, dark mode, and the login background pattern defined in `.adc/standards/conventions/frontend.md`.
 - Do not introduce new third-party dependencies (for example, `npm install`, `pip install`) without explicit human authorization.
 - Document progress, failed attempts, and environment issues in `.adc/contextgraph-edge-agent/scratchpad/session.md` before concluding a task.
 - Keep outputs deterministic for the same symbol and unchanged repository state.
@@ -234,6 +239,8 @@ curl http://localhost:18001/health
 ## ContextGraph Use Policy
 - Use `contextgraph-edge-agent/` for local task orchestration and session context only.
 - Use `mcp-servers.json` and ContextGraph MCP endpoints for indexed retrieval/integration workflows only.
+- Register every project in CGA and automatically install or refresh the paired `cga-mcp-server` profile before substantial feature work.
+- Periodically report project progress to CGA and run `index_repo_changes(repo_path)` after meaningful source, documentation, configuration, or test changes.
 - Do not assume a Node-specific local MCP bootstrap; prefer endpoint-first MCP profiles and keep integration language/runtime-agnostic unless the repository explicitly provides a local server implementation.
 - ContextGraph MCP must not replace local compile, lint, unit test, or integration test execution.
 - Treat scratchpad/task outputs as operational context, not canonical product truth.
@@ -286,6 +293,8 @@ curl http://localhost:18001/health
 
 ## ContextGraph Integration Policy
 - **Authoritative Onboarding URL**: Integration with ContextGraph MUST use the CGA Admin UI at `http://localhost:18001/admin` as the local setup surface for project registration and token creation.
+- **Mandatory Registration**: All ADC-compliant projects MUST be registered in CGA before feature work begins unless CGA is temporarily unavailable and the exception is documented.
+- **Automatic MCP Installation**: Project bootstrap SHOULD automatically install or refresh the paired `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` using environment-variable backed credentials.
 - **No Unreviewed Deviation**: Agents and developers MUST NOT use alternate ContextGraph onboarding flows unless explicitly approved in the same PR description.
 - **Traceability Requirement**: Any PR that introduces or changes ContextGraph integration MUST include a short "ContextGraph integration notes" section describing what step(s) from the onboarding URL were applied.
 - **MCP Alignment**: If ContextGraph integration adds or changes external service endpoints or credentials, `mcp-servers.json` MUST be updated in the same change set.
@@ -299,6 +308,75 @@ curl http://localhost:18001/health
 - **Default MCP Endpoint**: Local dev MCP clients SHOULD use `http://localhost:18001/mcp/sse` unless the CGA deployment explicitly advertises a different MCP SSE endpoint.
 - **Secret Policy**: Tokens and project identifiers (`CONTEXTGRAPH_MCP_TOKEN`, `CONTEXTGRAPH_EDGE_AGENT_TOKEN`, `CONTEXTGRAPH_PROJECT_ID`) MUST be injected via environment variables and never committed to repository files.
 - **Change Policy**: Any PR changing ContextGraph integration behavior MUST update both `bootstrap.md` and `mcp-servers.json`, and include validation notes.
+
+## CGA Progress Reporting and Indexing Policy
+- **Automatic Progress Reporting**: Projects SHOULD emit periodic progress reports to CGA through the project work briefing API or `workassist_record_activity` MCP tool for service starts, template generation, feature milestones, validation runs, and releases.
+- **Change Indexing**: After meaningful source, documentation, configuration, or test changes, agents SHOULD run `index_repo_changes(repo_path)` through `cga-mcp-server` so CGA indexes modified content.
+- **Periodic Indexing**: Long-running projects SHOULD schedule periodic incremental indexing even when no single task explicitly requests it, so CGA remains current.
+- **Failure Handling**: If CGA reporting or indexing fails, continue local build/test validation, record the failure in `.adc/contextgraph-edge-agent/scratchpad/session.md`, and retry when CGA is reachable.
+'@;
+
+    "conventions\frontend.md" = @'
+# Frontend Application Policy
+
+## Default Web App Experience
+- **Dark Mode Default**: All web application projects MUST default to dark mode unless the product owner explicitly approves another theme. Light mode may exist as an option, but the first-run experience should be dark.
+- **Admin UI Baseline**: Dashboard/admin surfaces SHOULD use the layout density, navigation rhythm, and component proportions of `https://admin-demo.vuestic.dev` as the default visual reference.
+- **Login Background Default**: Login pages SHOULD use a Vanta.js net-style background with white dots/lines at 15% opacity. If Vanta.js cannot be loaded safely, provide a static CSS fallback that preserves the same white net-on-dark visual intent.
+- **Accessible Contrast**: Dark mode colors MUST meet WCAG AA contrast for text and controls. Do not rely on opacity-only text for primary labels or actionable controls.
+
+## Browser Debugging Policy
+- **Built-In Browser First**: For all projects that design or modify web pages, agents MUST use the built-in browser shared page as the default debugging and self-validation surface.
+- **Self-Debug Requirement**: Before concluding frontend work, agents SHOULD load the changed page in the built-in browser shared page, inspect visible layout/state, and capture console or network errors when available.
+- **BrowserAgent Exception**: Use the BrowserAgent (BA) project plus browser extension only for special cases that require extension APIs, browser-permission flows, cross-browser behavior, or automation unavailable in the built-in browser shared page.
+- **Evidence Discipline**: Frontend validation notes SHOULD state which page was opened, what viewport/state was checked, and whether console/runtime errors were observed.
+
+## Default Frontend Integration
+- **FastAPI Pairing**: New web apps SHOULD assume a FastAPI backend unless the target platform explicitly requires another API framework.
+- **pgvector-Aware UX**: Search, recommendation, semantic retrieval, or AI-assist UI flows SHOULD be designed with PostgreSQL `pgvector` as the default vector persistence layer.
+'@;
+
+    "conventions\backend.md" = @'
+# Backend Application Policy
+
+## Default API Runtime
+- **FastAPI Default**: New web application backends SHOULD use FastAPI as the default API framework unless project requirements explicitly justify another runtime.
+- **Typed Contracts**: FastAPI request and response models MUST use explicit Pydantic schemas for externally visible API contracts.
+- **Health Endpoint**: FastAPI services MUST expose a lightweight `/health` endpoint suitable for Docker Compose health checks and local smoke validation.
+- **Async Boundaries**: Use async handlers for I/O-heavy endpoints and keep blocking CPU-heavy work outside request handlers unless explicitly bounded.
+
+## Default Web App Data Pairing
+- **PostgreSQL Default**: New web application backends SHOULD use PostgreSQL as the default relational database.
+- **pgvector Default**: If the application includes semantic search, recommendations, embeddings, RAG, or AI-assisted retrieval, PostgreSQL with `pgvector` is the default vector store.
+- **Migration Discipline**: Schema changes MUST be expressed through repeatable migrations and include rollback or forward-fix notes.
+'@;
+
+    "conventions\data-engineering.md" = @'
+# Data Engineering Policy
+
+## PostgreSQL Vector Policy (`pgvector`)
+- **Standard Vector Store**: For production semantic search, PostgreSQL with `pgvector` is the default vector persistence layer.
+- **Default Web App Store**: Web application projects SHOULD default to PostgreSQL plus `pgvector` when they need relational data and vector retrieval in the same product surface.
+- **Model Consistency**: Each embedding column MUST be tied to a single embedding model/version and fixed vector dimension.
+- **Index Strategy**: Use `HNSW` or `IVFFlat` indexes for vector columns based on latency/recall requirements. Brute-force scans are not allowed for production-scale datasets.
+- **Query Constraints**: All vector queries MUST enforce explicit `top_k` limits and include metadata filters when available.
+- **Distance Metric Discipline**: Use a single declared similarity metric per index/query path (cosine, inner product, or L2) and do not mix metrics in the same retrieval pipeline.
+
+## SQLite Vector Policy (`sqlite-vec`)
+- **Scope**: `sqlite-vec` is allowed for local development, offline testing, and lightweight edge use cases.
+- **Production Guardrail**: Do not use `sqlite-vec` as the primary retrieval backend for high-concurrency production workloads unless explicitly approved by architecture review.
+- **Migration Readiness**: Local vector schema and retrieval contract MUST be compatible with planned migration to `pgvector`.
+
+## Graph Database Policy
+- **When to Use Graph DB**: Use graph databases for deep relationship traversal, variable-depth path queries, and graph-native analytics.
+- **Query Interface**: Graph workloads MUST use the official graph connector and graph query language (Cypher/Gremlin) rather than recursive SQL workarounds.
+- **Identity Consistency**: Node/edge identifiers MUST be stable and map cleanly to relational primary keys where dual storage exists.
+- **Write Safety**: Graph mutation paths MUST be idempotent and support retry-safe behavior for at-least-once delivery.
+
+## Cross-Store Data Governance
+- **Ownership Rule**: For each entity, define a single source of truth (relational, vector, or graph) and document replication/sync direction.
+- **Backfill Rule**: Any re-embedding or graph backfill process MUST be versioned, resumable, and observable.
+- **Deletion Rule**: Data deletion requests MUST propagate consistently across relational, vector, cache, and graph stores.
 '@;
 
     "known-issues.md" = @'
@@ -313,6 +391,7 @@ curl http://localhost:18001/health
 
 - **2026-03-13**: Digital Constitution initial ratification. V1.0.0 created.
 - **2026-05-26**: Standardized the ADC MCP profile name to `cga-mcp-server`, set the default local dev SSE endpoint to `http://localhost:18001/mcp/sse`, and required Authorization/X-Project-ID headers in the standard profile.
+- **2026-05-26**: Added default web-app standards for built-in browser shared-page debugging, FastAPI, PostgreSQL `pgvector`, dark mode, Vanta.js login backgrounds, CGA progress reporting, and automatic change indexing.
 '@;
 
     "conventions\security.md" = @'

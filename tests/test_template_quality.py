@@ -54,6 +54,46 @@ def test_testing_convention_has_quality_strategy_section() -> None:
         assert entry in content
 
 
+def test_frontend_convention_has_browser_debugging_and_darkmode_defaults() -> None:
+    content = _read(".templates/standards/conventions/frontend.md")
+
+    required_entries = [
+        "## Default Web App Experience",
+        "- **Dark Mode Default**",
+        "Vanta.js net-style background",
+        "white dots/lines at 15% opacity",
+        "## Browser Debugging Policy",
+        "built-in browser shared page",
+        "BrowserAgent (BA) project plus browser extension",
+    ]
+
+    for entry in required_entries:
+        assert entry in content
+
+
+def test_backend_and_data_conventions_have_default_web_stack() -> None:
+    backend = _read(".templates/standards/conventions/backend.md")
+    data = _read(".templates/standards/conventions/data-engineering.md")
+
+    backend_required_entries = [
+        "## Default API Runtime",
+        "- **FastAPI Default**",
+        "Pydantic schemas",
+        "## Default Web App Data Pairing",
+        "- **pgvector Default**",
+    ]
+    data_required_entries = [
+        "PostgreSQL Vector Policy (`pgvector`)",
+        "- **Default Web App Store**",
+        "PostgreSQL plus `pgvector`",
+    ]
+
+    for entry in backend_required_entries:
+        assert entry in backend
+    for entry in data_required_entries:
+        assert entry in data
+
+
 def test_devops_convention_has_cicd_github_webhook_policy() -> None:
     content = _read(".templates/standards/conventions/devops.md")
 
@@ -127,6 +167,48 @@ def test_contextgraph_mcp_template_uses_local_dev_sse_endpoint_and_headers() -> 
 
     assert "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:18001/mcp/sse" in bootstrap
     assert "http://localhost:18001/mcp/sse" in devops
+
+
+def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> None:
+    bootstrap = _read(".templates/bootstrap.md")
+    devops = _read(".templates/standards/conventions/devops.md")
+    prompt_rules = _read(".templates/prompt-rules.md")
+
+    required_entries = [
+        "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity",
+        "CONTEXTGRAPH_INDEXING_POLICY=auto-incremental",
+        "- **Mandatory Registration**",
+        "- **Automatic MCP Installation**",
+        "## CGA Progress Reporting and Indexing Policy",
+        "workassist_record_activity",
+        "index_repo_changes(repo_path)",
+        "Register every project in CGA",
+        "Periodically report project progress to CGA",
+    ]
+    combined = "\n".join([bootstrap, devops, prompt_rules])
+
+    for entry in required_entries:
+        assert entry in combined
+
+
+def test_generate_adc_template_script_contains_default_web_app_policies() -> None:
+    script = _read("src/scripts/generate-adc-template.ps1")
+
+    required_entries = [
+        '"conventions\\frontend.md"',
+        '"conventions\\backend.md"',
+        '"conventions\\data-engineering.md"',
+        "built-in browser shared page",
+        "BrowserAgent (BA) project plus browser extension",
+        "Vanta.js net-style background",
+        "FastAPI Default",
+        "PostgreSQL plus `pgvector`",
+        "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity",
+        "index_repo_changes(repo_path)",
+    ]
+
+    for entry in required_entries:
+        assert entry in script
 
 
 def test_generate_adc_template_script_reports_template_generation_to_contextgraph() -> None:

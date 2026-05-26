@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.17
+**Version:** 1.1.18
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-05-26 (CGA MCP server profile standardized as cga-mcp-server and local CGA guidance corrected)
+**Date:** 2026-05-26 (Default web app debugging, stack, CGA reporting, and indexing standards added)
 
 ## 1. Introduction
 
@@ -150,6 +150,8 @@ By defining a domain glossary, AI assistants will be significantly more accurate
 To prevent overwhelming the AI's context window with irrelevant information, massive documentation files are split by domain.
 Instead of providing the entire documentation at once, the AI can load these files on-demand. For instance, if the AI is tasked with updating the React UI, it only needs to read `.adc/standards/conventions/frontend.md`, saving tokens and focusing its attention purely on frontend constraints.
 
+Default web application conventions now require built-in browser shared-page debugging by default, BrowserAgent plus browser extension testing only for special cases, dark-mode-first UI, FastAPI backends, PostgreSQL with `pgvector`, and Vanta.js net-style login backgrounds with white 15% opacity visuals.
+
 ### 3.5 `skills/` (Actionable AI Skills)
 To evolve the AI from merely "understanding static rules" to "executing complex project-specific actions," ADC introduces the `skills/` directory.
 
@@ -187,6 +189,7 @@ You can explicitly tell the AI: *"The `src/legacy-billing/` directory is extreme
 ### 3.11 `conventions/data-engineering.md` (Databases, Caching & Messaging)
 Data consistency and persistence are paramount. This file dictates how the AI should generate code interacting with databases, caches, and event queues.
 **Example constraints to include:**
+- **Default Web App Store (PostgreSQL + pgvector)**: "Web application projects SHOULD default to PostgreSQL plus `pgvector` when they need relational data and vector retrieval in the same product surface."
 - **Vector Search (pgvector / sqlite-vec)**: "When implementing semantic search, you MUST use `pgvector` (or `sqlite-vec` for local environments). Ensure HNSW or IVFFlat indexes are applied to the embedding columns. Never fallback to standard SQL text matching for vector fields."
 - **Graph Databases (e.g., Neo4j / Nebula)**: "For traversing complex relational node trees (like social graphs or permission hierarchies), you MUST utilize the existing Graph DB connector using Cypher/Gremlin instead of writing recursive SQL CTEs."
 - **Caching Strategy (Redis)**: "All read-heavy backend endpoints MUST implement a Redis caching layer. You MUST always append a strict TTL (Time-To-Live) to every cache write operation to prevent unbounded memory growth."
@@ -263,6 +266,7 @@ To achieve true project portability for AI Agents, the project must ship with it
 - **Runtime-Neutral MCP Rule**: "CGA MCP integration MUST be endpoint-first and language-agnostic by default. Do not require a Node-specific local entrypoint unless the target repository explicitly ships one."
 - **Default CGA MCP Endpoint**: "For the local dev CGA API profile, use the SSE MCP endpoint `http://localhost:18001/mcp/sse` with `Authorization` and `X-Project-ID` headers."
 - **ContextGraph Bootstrap Indexing**: "After integrating ContextGraph Edge Agent and CGA MCP Server for a project, you MUST initialize one full-project index through ContextGraph before executing feature tasks. Subsequent updates MUST use incremental indexing on changed files."
+- **CGA Progress Reporting and Change Indexing**: "Projects SHOULD periodically report service starts, feature milestones, validation runs, and releases to CGA, and SHOULD run `index_repo_changes(repo_path)` after meaningful source, documentation, configuration, or test changes."
 - **ContextGraph Policy Rule**: "Use ContextGraph Edge Agent workspace files (`.adc/contextgraph-edge-agent/tasks/`, `.adc/contextgraph-edge-agent/scratchpad/`) for orchestration state only. Canonical requirements and architecture decisions MUST remain in planning/standards/knowledge files."
 - **ContextGraph Execution Rule**: "ContextGraph MCP integrations are for retrieval/indexing and external context operations. Local build/test/deploy execution MUST remain on native project tooling."
 - **ContextGraph Secret Rule**: "ContextGraph credentials (`CONTEXTGRAPH_PROJECT_ID`, `CONTEXTGRAPH_MCP_TOKEN`, `CONTEXTGRAPH_EDGE_AGENT_TOKEN`) MUST be injected through environment variables and MUST NOT be committed in tracked files."

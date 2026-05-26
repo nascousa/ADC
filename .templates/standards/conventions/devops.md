@@ -16,6 +16,8 @@
 
 ## ContextGraph Integration Policy
 - **Authoritative Onboarding URL**: Integration with ContextGraph MUST use the CGA Admin UI at `http://localhost:18001/admin` as the local setup surface for project registration and token creation.
+- **Mandatory Registration**: All ADC-compliant projects MUST be registered in CGA before feature work begins unless CGA is temporarily unavailable and the exception is documented.
+- **Automatic MCP Installation**: Project bootstrap SHOULD automatically install or refresh the paired `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` using environment-variable backed credentials.
 - **No Unreviewed Deviation**: Agents and developers MUST NOT use alternate ContextGraph onboarding flows unless explicitly approved in the same PR description.
 - **Traceability Requirement**: Any PR that introduces or changes ContextGraph integration MUST include a short "ContextGraph integration notes" section describing what step(s) from the onboarding URL were applied.
 - **MCP Alignment**: If ContextGraph integration adds or changes external service endpoints or credentials, `mcp-servers.json` MUST be updated in the same change set.
@@ -30,6 +32,12 @@
 - **Default MCP Endpoint**: Local dev MCP clients SHOULD use `http://localhost:18001/mcp/sse` unless the CGA deployment explicitly advertises a different MCP SSE endpoint.
 - **Secret Policy**: Tokens and project identifiers (`CONTEXTGRAPH_MCP_TOKEN`, `CONTEXTGRAPH_EDGE_AGENT_TOKEN`, `CONTEXTGRAPH_PROJECT_ID`) MUST be injected via environment variables and never committed to repository files.
 - **Change Policy**: Any PR changing ContextGraph integration behavior MUST update both `bootstrap.md` and `mcp-servers.json`, and include validation notes.
+
+## CGA Progress Reporting and Indexing Policy
+- **Automatic Progress Reporting**: Projects SHOULD emit periodic progress reports to CGA through the project work briefing API or `workassist_record_activity` MCP tool for service starts, template generation, feature milestones, validation runs, and releases.
+- **Change Indexing**: After meaningful source, documentation, configuration, or test changes, agents SHOULD run `index_repo_changes(repo_path)` through `cga-mcp-server` so CGA indexes modified content.
+- **Periodic Indexing**: Long-running projects SHOULD schedule periodic incremental indexing even when no single task explicitly requests it, so CGA remains current.
+- **Failure Handling**: If CGA reporting or indexing fails, continue local build/test validation, record the failure in `.adc/contextgraph-edge-agent/scratchpad/session.md`, and retry when CGA is reachable.
 
 ## CI/CD Policy (GitHub + Webhook Deploy)
 

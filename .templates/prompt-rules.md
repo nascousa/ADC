@@ -6,6 +6,8 @@
 - Do not bypass safety checks in `.adc/standards/conventions/security.md`.
 - Follow Test-Driven Development (TDD) in `.adc/standards/conventions/testing.md`.
 - Default frontend theme and layout should closely match `https://admin-demo.vuestic.dev`, with dark theme as the default.
+- For web page design/debug tasks, use the built-in browser shared page as the default validation surface before considering external browser automation.
+- Default web applications should use FastAPI, PostgreSQL with `pgvector`, dark mode, and the login background pattern defined in `.adc/standards/conventions/frontend.md`.
 - Do not introduce new third-party dependencies (for example, `npm install`, `pip install`) without explicit human authorization.
 - Document progress, failed attempts, and environment issues in `.adc/contextgraph-edge-agent/scratchpad/session.md` before concluding a task.
 - Keep outputs deterministic for the same symbol and unchanged repository state.
@@ -30,6 +32,8 @@
 - Use `contextgraph-edge-agent/` for local task orchestration and session context only.
 - Use `mcp-servers.json` and ContextGraph MCP endpoints for indexed retrieval/integration workflows only.
 - Ensure `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` contains the `cga-mcp-server` entry and keep it enabled by default for ADC-compliant repositories.
+- Register every project in CGA and automatically install or refresh the paired `cga-mcp-server` profile before substantial feature work.
+- Periodically report project progress to CGA and run `index_repo_changes(repo_path)` after meaningful source, documentation, configuration, or test changes.
 - Do not assume a Node-specific local MCP bootstrap; prefer endpoint-first MCP profiles and keep integration language/runtime-agnostic unless the repository explicitly provides a local server implementation.
 - ContextGraph MCP must not replace local compile, lint, unit test, or integration test execution.
 - Treat scratchpad/task outputs as operational context, not canonical product truth.
