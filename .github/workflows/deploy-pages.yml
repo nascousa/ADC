@@ -29,11 +29,29 @@ jobs:
           set -euo pipefail
           mkdir -p site/docs
 
-          if [ -f README.md ]; then
-            cp README.md site/index.md
-          else
-            echo "# ADC" > site/index.md
-          fi
+          python - <<'PY'
+          from html import escape
+          from pathlib import Path
+
+          readme = Path('README.md')
+          body = readme.read_text(encoding='utf-8') if readme.exists() else '# ADC\n'
+          html = f'''<!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <title>ADC</title>
+            <style>
+              body {{ margin: 0; background: #0f172a; color: #e5e7eb; font: 16px/1.6 system-ui, sans-serif; }}
+              main {{ max-width: 980px; margin: 0 auto; padding: 48px 24px; }}
+              pre {{ white-space: pre-wrap; word-break: break-word; background: #111827; border: 1px solid #334155; border-radius: 8px; padding: 24px; }}
+              a {{ color: #7dd3fc; }}
+            </style>
+          </head>
+          <body><main><pre>{escape(body)}</pre></main></body>
+          </html>'''
+          Path('site/index.html').write_text(html, encoding='utf-8')
+          PY
 
           if [ -d docs ]; then
             cp -R docs/. site/docs/
