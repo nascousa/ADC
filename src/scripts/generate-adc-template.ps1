@@ -1,3 +1,81 @@
+function Get-ContextGraphWorkBriefingConfig {
+    $projectId = if ($env:CONTEXTGRAPH_PROJECT_ID) { [string]$env:CONTEXTGRAPH_PROJECT_ID } else { '' }
+    $token = if ($env:CONTEXTGRAPH_EDGE_AGENT_TOKEN) {
+        [string]$env:CONTEXTGRAPH_EDGE_AGENT_TOKEN
+    } elseif ($env:CONTEXTGRAPH_MCP_TOKEN) {
+        [string]$env:CONTEXTGRAPH_MCP_TOKEN
+    } else {
+        ''
+    }
+
+    $apiUrl = if ($env:CONTEXTGRAPH_BRIEFING_API_URL) {
+        [string]$env:CONTEXTGRAPH_BRIEFING_API_URL
+    } elseif ($env:CONTEXTGRAPH_UPSTREAM_URL) {
+        (([string]$env:CONTEXTGRAPH_UPSTREAM_URL).TrimEnd('/')) + '/api/project/work-briefing/activity'
+    } elseif ($env:CONTEXTGRAPH_MCP_SERVER_URL) {
+        $mcpUrl = ([string]$env:CONTEXTGRAPH_MCP_SERVER_URL).TrimEnd('/')
+        if ($mcpUrl.EndsWith('/mcp/sse')) {
+            $mcpUrl.Substring(0, $mcpUrl.Length - 8) + '/api/project/work-briefing/activity'
+        } elseif ($mcpUrl.EndsWith('/mcp/messages')) {
+            $mcpUrl.Substring(0, $mcpUrl.Length - 13) + '/api/project/work-briefing/activity'
+        } elseif ($mcpUrl.EndsWith('/mcp')) {
+            $mcpUrl.Substring(0, $mcpUrl.Length - 4) + '/api/project/work-briefing/activity'
+        } else {
+            $mcpUrl + '/api/project/work-briefing/activity'
+        }
+    } else {
+        ''
+    }
+
+    return @{
+        Enabled = (-not [string]::IsNullOrWhiteSpace($apiUrl)) -and (-not [string]::IsNullOrWhiteSpace($token)) -and (-not [string]::IsNullOrWhiteSpace($projectId))
+        ApiUrl = [string]$apiUrl
+        ProjectId = [string]$projectId
+        Token = [string]$token
+    }
+}
+
+function Send-ContextGraphWorkBriefingActivity {
+    param(
+        [Parameter(Mandatory)][string]$EventType,
+        [Parameter(Mandatory)][string]$Title,
+        [string]$Summary = '',
+        [string]$Status = '',
+        [string]$WorkspaceName = 'ADC',
+        [string]$ExternalId = '',
+        [hashtable]$Metadata = @{},
+        [string[]]$Tags = @()
+    )
+
+    $config = Get-ContextGraphWorkBriefingConfig
+    if (-not $config.Enabled) {
+        return
+    }
+
+    $payload = @{
+        project_id = $config.ProjectId
+        workspace_name = $WorkspaceName
+        event_type = $EventType
+        title = $Title
+        summary = $Summary
+        status = $Status
+        tags = @($Tags | Where-Object { -not [string]::IsNullOrWhiteSpace($_) })
+        metadata = if ($Metadata) { $Metadata } else { @{} }
+    }
+    if ($ExternalId) {
+        $payload.external_id = $ExternalId
+    }
+
+    try {
+        Invoke-RestMethod -Uri $config.ApiUrl -Method Post -Headers @{
+            Authorization = "Bearer $($config.Token)"
+            'X-Project-ID' = $config.ProjectId
+        } -ContentType 'application/json' -Body ($payload | ConvertTo-Json -Depth 10) | Out-Null
+    } catch {
+        Write-Warning "ContextGraph work briefing report failed: $($_.Exception.Message)"
+    }
+}
+
 $TargetDir = "d:\Repos\ARKSOFT\PCS\adc-template"
 
 Write-Host "Generating ADC template at $TargetDir ..."
@@ -409,5 +487,6 @@ foreach ($file in $EmptyFiles) {
 }
 
 Write-Host "Success! Complete ADC template scaffolded at $TargetDir."
+Send-ContextGraphWorkBriefingActivity -EventType 'template_generation' -Title 'Generated ADC template scaffold' -Summary "ADC template scaffold generated at $TargetDir." -Status 'completed' -ExternalId ("template-generation:" + $TargetDir) -Tags @('adc', 'template') -Metadata @{ targetDir = $TargetDir; fileCount = $Files.Count + $EmptyFiles.Count }
 
 

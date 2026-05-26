@@ -1,13 +1,15 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.15
+**Version:** 1.1.16
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-05-15 (nascousa ADC repository migration)
+**Date:** 2026-05-26 (ContextGraph work briefing reporting added)
 
 ## 1. Introduction
 
 The **Autonomous Development Constitution (ADC)** is a standardized framework designed to provide highly structured context for large codebases, AI assistants (agents), and human developers. 
+
+ADC now also emits lightweight project activity into CGA when ContextGraph project credentials are configured. The built-in FastAPI service reports `service_start`, and `src/scripts/generate-adc-template.ps1` reports `template_generation` on successful scaffold completion.
 
 The core philosophy of ADC is to manage the "soul of the project" (architecture, conventions, domain knowledge, and AI instructions) alongside the "body of the project" (the source code). It acts as the absolute **"Digital Constitution"** of the repository.
 

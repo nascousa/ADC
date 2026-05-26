@@ -129,3 +129,17 @@ def test_contextgraph_mcp_template_uses_local_dev_sse_endpoint_and_headers() -> 
     assert "http://localhost:8001/mcp/sse" in devops
 
 
+def test_generate_adc_template_script_reports_template_generation_to_contextgraph() -> None:
+    script = _read("src/scripts/generate-adc-template.ps1")
+
+    required_entries = [
+        "Send-ContextGraphWorkBriefingActivity",
+        "template_generation",
+        "CONTEXTGRAPH_PROJECT_ID",
+        "/api/project/work-briefing/activity",
+    ]
+
+    for entry in required_entries:
+        assert entry in script
+
+
