@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.19
+**Version:** 1.1.20
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-05-26 (CPMD skill added and expired dependency audit exception removed)
+**Date:** 2026-05-27 (report-progress skill frontmatter fixed)
 
 ## 1. Introduction
 
