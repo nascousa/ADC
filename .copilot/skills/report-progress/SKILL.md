@@ -1,3 +1,4 @@
+---
 name: report-progress
 description: "Report project progress to CGA MCP work briefing APIs. USE FOR: milestone updates, in-progress summaries, blockers, risks, release notes, and optional PBI/PR metadata attachment."
 argument-hint: "repo path, project scope, progress summary, optional PBI/PR references"
