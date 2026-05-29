@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.20
+**Version:** 1.1.21
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-05-27 (report-progress skill frontmatter fixed)
+**Date:** 2026-05-28 (ADC skills aligned with ContextGraph standard)
 
 ## 1. Introduction
 

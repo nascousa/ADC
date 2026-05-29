@@ -225,3 +225,36 @@ def test_generate_adc_template_script_reports_template_generation_to_contextgrap
         assert entry in script
 
 
+def test_adc_skills_use_current_contextgraph_standard() -> None:
+    onboard = _read(".copilot/skills/adc-onboard/SKILL.md")
+    update = _read(".copilot/skills/adc-update/SKILL.md")
+    combined = "\n".join([onboard, update])
+
+    required_entries = [
+        "contextgraph-edge-agent",
+        "cga-mcp-server",
+        "ContextGraph/CGA",
+        "CONTEXTGRAPH_BRIEFING_API_URL",
+        "index_repo_changes(repo_path)",
+        "FastAPI",
+        "PostgreSQL with `pgvector`",
+        "report-progress",
+        "tests/test_template_quality.py",
+        "D:\\Repos\\ADC",
+    ]
+    forbidden_entries = [
+        "rd-onboard",
+        "rd-edge-agent",
+        "RepoDepot",
+        "RD MCP",
+        "RD project",
+        "src/tests/test_template_quality.py",
+        "D:\\Repos\\ARKSOFT\\ADC",
+    ]
+
+    for entry in required_entries:
+        assert entry in combined
+    for entry in forbidden_entries:
+        assert entry not in combined
+
+
