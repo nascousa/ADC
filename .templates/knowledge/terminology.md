@@ -11,6 +11,7 @@ This file defines all domain-specific terminology, abbreviations, and shortcuts 
 | **ADC** | Autonomous Development Constitution | Standardized framework for managing project governance, AI instructions, and developer context in `.adc/` folder |
 | **GHC** | GitHub Copilot | Standard abbreviation for GitHub Copilot in this project documentation and discussion |
 | **MCP** | Model Context Protocol | Protocol for AI agents (like Copilot, Claude) to access external tools and data sources |
+| **CGA** | ContextGraphAgent | Formal product abbreviation for the ContextGraphAgent service, admin surface, MCP server, and project registry |
 | **ContextGraph** | ContextGraph | Central repository and artifact management system; use `ContextGraph` as shorthand in code/docs |
 
 ## ContextGraph Components
@@ -18,10 +19,10 @@ This file defines all domain-specific terminology, abbreviations, and shortcuts 
 | Term | Definition |
 |---|---|
 | **ContextGraph** | Central artifact catalog, project registry, and orchestration service; local CGA Admin UI runs at `http://localhost:18001/admin` |
-| **CGA MCP Server** | Model Context Protocol endpoint for programmatic ContextGraph access; default local dev SSE endpoint is `http://localhost:18001/mcp/sse` |
+| **CGA MCP Server** | ContextGraphAgent Model Context Protocol endpoint for programmatic ContextGraph access; default local dev SSE endpoint is `http://localhost:18001/mcp/sse` |
 | **ContextGraph Edge Agent** | Local execution and orchestration agent; workspace stored in `.adc/contextgraph-edge-agent`, implementation in `src/contextgraph-edge-agent` |
 | **CGA MCP Server Profile** | Standard MCP server profile name (`cga-mcp-server`) used by ADC templates for auto-loading CGA MCP wiring |
-| **CGA Admin UI** | Local setup surface for project registration and token creation at `http://localhost:18001/admin` |
+| **CGA Admin UI** | ContextGraphAgent local setup surface for project registration and token creation at `http://localhost:18001/admin` |
 
 ## Project Structure Terms
 

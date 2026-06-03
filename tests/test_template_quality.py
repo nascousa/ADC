@@ -169,6 +169,26 @@ def test_contextgraph_mcp_template_uses_local_dev_sse_endpoint_and_headers() -> 
     assert "http://localhost:18001/mcp/sse" in devops
 
 
+def test_cga_is_formally_defined_as_contextgraphagent() -> None:
+    terminology = _read(".templates/knowledge/terminology.md")
+    index = _read(".templates/index.md")
+    bootstrap = _read(".templates/bootstrap.md")
+    devops = _read(".templates/standards/conventions/devops.md")
+    mcp_profile = _read(".templates/contextgraph-edge-agent/mcp/mcp-servers.json")
+    generator = _read("src/scripts/generate-adc-template.ps1")
+
+    required_entries = [
+        "| **CGA** | ContextGraphAgent |",
+        "CGA (ContextGraphAgent) Admin UI",
+        "ContextGraphAgent Model Context Protocol endpoint",
+        "CGA (ContextGraphAgent) MCP Server endpoint profile",
+    ]
+    combined = "\n".join([terminology, index, bootstrap, devops, mcp_profile, generator])
+
+    for entry in required_entries:
+        assert entry in combined
+
+
 def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> None:
     bootstrap = _read(".templates/bootstrap.md")
     devops = _read(".templates/standards/conventions/devops.md")

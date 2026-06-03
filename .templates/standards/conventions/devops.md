@@ -15,8 +15,8 @@
 - **Rotation Update**: When deploy keys rotate, `docs/deploy_key.md` MUST be updated in the same change set.
 
 ## ContextGraph Integration Policy
-- **Authoritative Onboarding URL**: Integration with ContextGraph MUST use the CGA Admin UI at `http://localhost:18001/admin` as the local setup surface for project registration and token creation.
-- **Mandatory Registration**: All ADC-compliant projects MUST be registered in CGA before feature work begins unless CGA is temporarily unavailable and the exception is documented.
+- **Authoritative Onboarding URL**: Integration with ContextGraph MUST use the CGA (ContextGraphAgent) Admin UI at `http://localhost:18001/admin` as the local setup surface for project registration and token creation.
+- **Mandatory Registration**: All ADC-compliant projects MUST be registered in CGA (ContextGraphAgent) before feature work begins unless CGA is temporarily unavailable and the exception is documented.
 - **Automatic MCP Installation**: Project bootstrap SHOULD automatically install or refresh the paired `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` using environment-variable backed credentials.
 - **No Unreviewed Deviation**: Agents and developers MUST NOT use alternate ContextGraph onboarding flows unless explicitly approved in the same PR description.
 - **Traceability Requirement**: Any PR that introduces or changes ContextGraph integration MUST include a short "ContextGraph integration notes" section describing what step(s) from the onboarding URL were applied.
