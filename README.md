@@ -1,15 +1,15 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.21
+**Version:** 1.1.22
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-05-28 (ADC skills aligned with ContextGraph standard)
+**Date:** 2026-06-03 (CGA formal name defined as ContextGraphAgent)
 
 ## 1. Introduction
 
 The **Autonomous Development Constitution (ADC)** is a standardized framework designed to provide highly structured context for large codebases, AI assistants (agents), and human developers. 
 
-ADC now also emits lightweight project activity into CGA when ContextGraph project credentials are configured. The built-in FastAPI service reports `service_start`, and `src/scripts/generate-adc-template.ps1` reports `template_generation` on successful scaffold completion.
+ADC now also emits lightweight project activity into CGA (ContextGraphAgent) when ContextGraph project credentials are configured. The built-in FastAPI service reports `service_start`, and `src/scripts/generate-adc-template.ps1` reports `template_generation` on successful scaffold completion.
 
 The core philosophy of ADC is to manage the "soul of the project" (architecture, conventions, domain knowledge, and AI instructions) alongside the "body of the project" (the source code). It acts as the absolute **"Digital Constitution"** of the repository.
 
@@ -262,6 +262,7 @@ To ensure that human developers always have an accurate mental model of the syst
 To achieve true project portability for AI Agents, the project must ship with its own toolsets. The `.adc/mcp/` directory stores the configuration files required to bootstrap **Model Context Protocol (MCP)** servers.
 - **Portability**: "When cloning this repository on a new machine, the user or AI can directly import `.adc/mcp/mcp-servers.json` into their local AI client (like Cursor or Claude Desktop) to instantly gain access to the project's dedicated database connections, API wrappers, or internal corporate context tools."
 - **Constraint**: "Any new external integrations (e.g., adding a PostgreSQL database) MUST be accompanied by an update to the MCP configuration so that future AI agents inherit the ability to query that database directly."
+- **CGA Name Definition**: "CGA is the formal abbreviation for ContextGraphAgent. Use `ContextGraphAgent` when expanding the acronym in product, template, and governance text."
 - **CGA MCP Server Profile Standard**: "ADC-compliant projects MUST provide a preconfigured `cga-mcp-server` entry in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` so new repositories automatically inherit the CGA MCP Server wiring."
 - **Runtime-Neutral MCP Rule**: "CGA MCP integration MUST be endpoint-first and language-agnostic by default. Do not require a Node-specific local entrypoint unless the target repository explicitly ships one."
 - **Default CGA MCP Endpoint**: "For the local dev CGA API profile, use the SSE MCP endpoint `http://localhost:18001/mcp/sse` with `Authorization` and `X-Project-ID` headers."

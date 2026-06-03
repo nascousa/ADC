@@ -22,9 +22,9 @@ It defines the exact rules, constraints, and architecture that AI Agents must fo
 
 ## Required Integrations
 This project **MUST** integrate with the ContextGraph ecosystem:
-- **ContextGraph Project**: Central repository and artifact management system (registration via CGA Admin UI at `http://localhost:18001/admin`)
+- **ContextGraph Project**: Central repository and artifact management system (registration via CGA (ContextGraphAgent) Admin UI at `http://localhost:18001/admin`)
 - **ContextGraph Edge Agent** (`src/contextgraph-edge-agent`): Local execution and orchestration agent
-- **CGA MCP Server**: Model Context Protocol endpoint for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:18001/mcp/sse`)
+- **CGA MCP Server**: ContextGraphAgent Model Context Protocol endpoint for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:18001/mcp/sse`)
 - **CGA MCP Server Profile Standard**: `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST include a `cga-mcp-server` entry so ADC-based projects can auto-load CGA MCP wiring.
 - **Initial ContextGraph Indexing**: Immediately after ContextGraph Edge Agent + CGA MCP Server integration, run full-project indexing once so retrieval/review tools can access the entire repository context.
 

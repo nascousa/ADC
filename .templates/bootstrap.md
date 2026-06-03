@@ -9,10 +9,10 @@ Before starting the application, register with the ContextGraph ecosystem:
 
 ```bash
 # 1. Register this project with ContextGraph
-# Open CGA Admin UI: http://localhost:18001/admin
+# Open CGA (ContextGraphAgent) Admin UI: http://localhost:18001/admin
 # Follow the guided setup to:
 #   - Register this project in the ContextGraph catalog
-#   - Retrieve CGA MCP server credentials and edge agent token
+#   - Retrieve CGA (ContextGraphAgent) MCP server credentials and edge agent token
 #   - Store credentials in .env (see step 2 below)
 
 # 2. Configure ContextGraph environment variables

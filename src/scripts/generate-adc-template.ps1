@@ -123,9 +123,9 @@ It defines the exact rules, constraints, and architecture that AI Agents must fo
 
 ## Required Integrations
 This project **MUST** integrate with the ContextGraph ecosystem:
-- **ContextGraph Project**: Central repository and artifact management system (registration via CGA Admin UI at `http://localhost:18001/admin`)
+- **ContextGraph Project**: Central repository and artifact management system (registration via CGA (ContextGraphAgent) Admin UI at `http://localhost:18001/admin`)
 - **ContextGraph Edge Agent** (`src/contextgraph-edge-agent`): Local execution and orchestration agent
-- **CGA MCP Server**: Model Context Protocol endpoint for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:18001/mcp/sse`)
+- **CGA MCP Server**: ContextGraphAgent Model Context Protocol endpoint for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:18001/mcp/sse`)
 - **Initial ContextGraph Indexing**: Immediately after ContextGraph Edge Agent + CGA MCP Server integration, run full-project indexing once so retrieval/review tools can access the entire repository context.
 
 ContextGraph MCP access is endpoint-first by default. A local MCP implementation is optional and repository-specific.
@@ -146,10 +146,10 @@ Before starting the application, register with the ContextGraph ecosystem:
 
 ```bash
 # 1. Register this project with ContextGraph
-# Open CGA Admin UI: http://localhost:18001/admin
+# Open CGA (ContextGraphAgent) Admin UI: http://localhost:18001/admin
 # Follow the guided setup to:
 #   - Register this project in the ContextGraph catalog
-#   - Retrieve CGA MCP server credentials and edge agent token
+#   - Retrieve CGA (ContextGraphAgent) MCP server credentials and edge agent token
 #   - Store credentials in .env (see step 2 below)
 
 # 2. Configure ContextGraph environment variables
@@ -292,8 +292,8 @@ curl http://localhost:18001/health
 - **Rotation Update**: When deploy keys rotate, `docs/deploy_key.md` MUST be updated in the same change set.
 
 ## ContextGraph Integration Policy
-- **Authoritative Onboarding URL**: Integration with ContextGraph MUST use the CGA Admin UI at `http://localhost:18001/admin` as the local setup surface for project registration and token creation.
-- **Mandatory Registration**: All ADC-compliant projects MUST be registered in CGA before feature work begins unless CGA is temporarily unavailable and the exception is documented.
+- **Authoritative Onboarding URL**: Integration with ContextGraph MUST use the CGA (ContextGraphAgent) Admin UI at `http://localhost:18001/admin` as the local setup surface for project registration and token creation.
+- **Mandatory Registration**: All ADC-compliant projects MUST be registered in CGA (ContextGraphAgent) before feature work begins unless CGA is temporarily unavailable and the exception is documented.
 - **Automatic MCP Installation**: Project bootstrap SHOULD automatically install or refresh the paired `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` using environment-variable backed credentials.
 - **No Unreviewed Deviation**: Agents and developers MUST NOT use alternate ContextGraph onboarding flows unless explicitly approved in the same PR description.
 - **Traceability Requirement**: Any PR that introduces or changes ContextGraph integration MUST include a short "ContextGraph integration notes" section describing what step(s) from the onboarding URL were applied.
@@ -489,7 +489,7 @@ curl http://localhost:18001/health
                 "CONTEXTGRAPH_MCP_TOKEN": "${CONTEXTGRAPH_MCP_TOKEN}",
                 "CONTEXTGRAPH_PROJECT_ID": "${CONTEXTGRAPH_PROJECT_ID}"
             },
-            "description": "CGA MCP Server endpoint profile for ADC projects (language-agnostic MCP wiring)"
+            "description": "CGA (ContextGraphAgent) MCP Server endpoint profile for ADC projects (language-agnostic MCP wiring)"
         },
     "local-postgres": {
       "command": "npx",

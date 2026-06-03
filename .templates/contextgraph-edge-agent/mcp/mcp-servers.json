@@ -11,7 +11,7 @@
         "CONTEXTGRAPH_MCP_TOKEN": "${CONTEXTGRAPH_MCP_TOKEN}",
         "CONTEXTGRAPH_PROJECT_ID": "${CONTEXTGRAPH_PROJECT_ID}"
       },
-      "description": "CGA MCP Server endpoint profile for ADC projects (language-agnostic MCP wiring)"
+      "description": "CGA (ContextGraphAgent) MCP Server endpoint profile for ADC projects (language-agnostic MCP wiring)"
     },
     "local-postgres": {
       "command": "npx",
