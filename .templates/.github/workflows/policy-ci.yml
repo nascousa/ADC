@@ -60,6 +60,11 @@ jobs:
             exit 1
           }
 
+          echo "$PR_BODY" | grep -qi "PQC/CNSA 2.0 communications policy applied" || {
+            echo "Missing PQC/CNSA 2.0 communications checklist item in PR body."
+            exit 1
+          }
+
           echo "$PR_BODY" | grep -qi "Data policy applied for pgvector/sqlite-vec/graph" || {
             echo "Missing data policy checklist item in PR body."
             exit 1

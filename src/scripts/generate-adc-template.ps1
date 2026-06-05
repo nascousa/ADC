@@ -222,6 +222,7 @@ curl http://localhost:18001/health
 - Use absolute paths when importing modules.
 - For every ADC update, increment README version and update README date in the same change.
 - Do not bypass safety checks in `.adc/standards/conventions/security.md`.
+- All project communications MUST follow the PQC/CNSA 2.0 baseline in `.adc/standards/conventions/security.md`.
 - Follow Test-Driven Development (TDD) in `.adc/standards/conventions/testing.md`.
 - For web page design/debug tasks, use the built-in browser shared page as the default validation surface before considering external browser automation.
 - Default web applications should use FastAPI, PostgreSQL with `pgvector`, dark mode, and the login background pattern defined in `.adc/standards/conventions/frontend.md`.
@@ -392,6 +393,7 @@ curl http://localhost:18001/health
 - **2026-03-13**: Digital Constitution initial ratification. V1.0.0 created.
 - **2026-05-26**: Standardized the ADC MCP profile name to `cga-mcp-server`, set the default local dev SSE endpoint to `http://localhost:18001/mcp/sse`, and required Authorization/X-Project-ID headers in the standard profile.
 - **2026-05-26**: Added default web-app standards for built-in browser shared-page debugging, FastAPI, PostgreSQL `pgvector`, dark mode, Vanta.js login backgrounds, CGA progress reporting, and automatic change indexing.
+- **2026-06-04**: Added the mandatory PQC/CNSA 2.0 communication baseline requiring ML-KEM/ML-DSA or approved CNSA 2.0 PQC successors for all project communication paths.
 '@;
 
     "conventions\security.md" = @'
@@ -400,12 +402,21 @@ curl http://localhost:18001/health
 - **Input Sanitization**: All external inputs MUST run through the Zod validation middleware before reaching controllers.
 - **Secret Management**: NEVER hardcode API keys. All keys MUST be retrieved at runtime via `aws-secrets-manager`.
 
+## Post-Quantum Communications Standard (PQC/CNSA 2.0)
+- **Mandatory Scope**: All project communication paths MUST use CNSA 2.0-aligned post-quantum cryptography, including public APIs, service-to-service calls, admin surfaces, database/cache/message-broker connections, MCP endpoints, webhooks, CI/CD callbacks, telemetry export, replication, backup transfer, and agent-to-service communication.
+- **Approved Key Establishment**: Key establishment MUST use ML-KEM (NIST FIPS 203 / CRYSTALS-Kyber lineage) or a CNSA 2.0-approved PQC successor at the required CNSA 2.0 strength level. When a stack exposes parameter sets, default to ML-KEM-1024 unless a project security profile explicitly approves another CNSA 2.0-compliant level.
+- **Approved Digital Signatures**: Digital signatures for certificates, software artifacts, protocol handshakes, webhook signing, release signing, and machine-to-machine trust MUST use ML-DSA (NIST FIPS 204 / CRYSTALS-Dilithium lineage) or a CNSA 2.0-approved PQC successor. When a stack exposes parameter sets, default to ML-DSA-87 unless a project security profile explicitly approves another CNSA 2.0-compliant level.
+- **Transport Requirement**: Use PQC-capable TLS, mTLS, SSH, VPN, message-bus encryption, or protocol-native protection that negotiates approved ML-KEM/ML-DSA or hybrid PQC suites. Legacy-only TLS, plaintext HTTP, unsigned webhooks, unauthenticated broker links, and non-PQC tunnels are forbidden for project communications.
+- **Hybrid Transition Rule**: If production infrastructure cannot yet negotiate pure PQC suites, use hybrid classical plus PQC negotiation, document the limitation, add a migration owner and expiry date, and keep the channel on the CNSA 2.0 transition path.
+- **Evidence Requirement**: PRs that add or change communication paths MUST include evidence of the negotiated KEM/signature suite, library or platform configuration, and any approved exception. Missing evidence blocks merge.
+- **Exception Policy**: Exceptions require explicit human approval through the constitutional amendment process, a named owner, compensating controls, and a time-bounded expiry date enforced in review.
+
 ## Common Security Strategies
 - **Least Privilege Access**: Grant users, services, and CI jobs only the minimum permissions required, and review privileges regularly.
 - **Defense in Depth**: Apply layered controls across application, infrastructure, and network boundaries so one control failure does not expose critical assets.
 - **Secure by Default Configuration**: Default new services to deny-all network posture, strict auth requirements, and disabled debug/admin surfaces.
 - **Strong Authentication and Authorization**: Enforce strong identity verification, short-lived credentials, and explicit authorization checks on every protected action.
-- **Encryption in Transit and at Rest**: Require TLS for all external and internal service communication and encrypt sensitive persisted data with managed keys.
+- **Encryption in Transit and at Rest**: Require CNSA 2.0-aligned PQC-capable protection for all external and internal service communication and encrypt sensitive persisted data with managed keys.
 - **Input Validation and Output Encoding**: Validate all untrusted input against strict schemas and encode output contexts to prevent injection vulnerabilities.
 - **Dependency and Supply Chain Security**: Pin dependencies, run vulnerability scans in CI, verify package integrity, and remove unused packages.
 - **Secret Lifecycle Management**: Store secrets in dedicated secret managers, rotate on schedule, and revoke immediately on exposure suspicion.
@@ -471,6 +482,7 @@ curl http://localhost:18001/health
 *AI Agents MUST read and verify every item below before generating a Git commit or PR.*
 - [ ] Are all unit tests and E2E tests passing?
 - [ ] Did I verify the CVSS score of all new dependencies introduced?
+- [ ] Did I verify that all added or changed communication paths use PQC/CNSA 2.0-compliant ML-KEM/ML-DSA or approved CRYSTALS/PQC successor algorithms?
 - [ ] Did I auto-update the Mermaid diagrams in `.adc/knowledge/diagrams/` to match my architectural modifications?
 - [ ] Are Docker CPU/Memory resource limits properly set as environment variables?
 '@;

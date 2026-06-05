@@ -4,6 +4,7 @@
 - Use absolute paths when importing modules.
 - For every ADC update, increment README version and update README date in the same change.
 - Do not bypass safety checks in `.adc/standards/conventions/security.md`.
+- All project communications MUST follow the PQC/CNSA 2.0 baseline in `.adc/standards/conventions/security.md`.
 - Follow Test-Driven Development (TDD) in `.adc/standards/conventions/testing.md`.
 - Default frontend theme and layout should closely match `https://admin-demo.vuestic.dev`, with dark theme as the default.
 - For web page design/debug tasks, use the built-in browser shared page as the default validation surface before considering external browser automation.

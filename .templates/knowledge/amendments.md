@@ -10,5 +10,6 @@
 - **2026-05-26**: Added default web-app standards for built-in browser shared-page debugging, FastAPI, PostgreSQL `pgvector`, dark mode, Vanta.js login backgrounds, CGA progress reporting, and automatic change indexing.
 - **2026-05-28**: Aligned `adc-onboard` and `adc-update` workflow skills with the current ContextGraph/CGA standard, replacing obsolete RD/RepoDepot guidance with `contextgraph-edge-agent`, `cga-mcp-server`, CGA progress reporting, and incremental indexing expectations.
 - **2026-06-02**: Defined CGA as the formal abbreviation for ContextGraphAgent across ADC terminology, onboarding, and MCP profile templates.
+- **2026-06-04**: Added the mandatory PQC/CNSA 2.0 communication baseline requiring ML-KEM/ML-DSA or approved CNSA 2.0 PQC successors for all project communication paths.
 
 

@@ -91,6 +91,11 @@ This file defines all domain-specific terminology, abbreviations, and shortcuts 
 |---|---|
 | **CVE** | Common Vulnerabilities and Exposures; tracked severity score |
 | **CVSS** | Common Vulnerability Scoring System; 0-10 scale (threshold: 7.0+) |
+| **PQC** | Post-Quantum Cryptography; cryptography intended to resist attacks by quantum computers |
+| **CNSA 2.0** | Commercial National Security Algorithm Suite 2.0; required baseline for ADC post-quantum communication controls |
+| **ML-KEM** | Module-Lattice-Based Key-Encapsulation Mechanism; NIST FIPS 203 standard derived from the CRYSTALS-Kyber lineage |
+| **ML-DSA** | Module-Lattice-Based Digital Signature Algorithm; NIST FIPS 204 standard derived from the CRYSTALS-Dilithium lineage |
+| **CRYSTALS Suite** | Cryptographic Suite for Algebraic Lattices; source family for Kyber/ML-KEM and Dilithium/ML-DSA PQC algorithms |
 | **Secret Manager** | Secure storage for credentials (AWS Secrets Manager, HashiCorp Vault) |
 | **.gitignore** | File specifying paths Git should NOT commit (build artifacts, .env, node_modules) |
 | **Container** | Docker containerized application environment with resource limits |

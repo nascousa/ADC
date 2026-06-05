@@ -14,4 +14,5 @@ Describe what changed and why.
 ## Policy Checklist
 
 - [ ] JWT/token entropy policy applied (algorithm, key strength, claims, TTL, rotation)
+- [ ] PQC/CNSA 2.0 communications policy applied (ML-KEM/ML-DSA or approved CRYSTALS/PQC successor)
 - [ ] Data policy applied for pgvector/sqlite-vec/graph usage and index/query constraints

@@ -39,6 +39,54 @@ def test_security_convention_has_patch_and_update_strategies() -> None:
         assert entry in content
 
 
+def test_security_convention_requires_pqc_cnsa2_communications() -> None:
+    security = _read(".templates/standards/conventions/security.md")
+    prompt_rules = _read(".templates/prompt-rules.md")
+    terminology = _read(".templates/knowledge/terminology.md")
+    amendments = _read(".templates/knowledge/amendments.md")
+    pr_checklist = _read(".templates/standards/checklists/pr-review.md")
+    root_pr_template = _read(".github/pull_request_template.md")
+    template_pr_template = _read(".templates/.github/pull_request_template.md")
+    root_policy_ci = _read(".github/workflows/policy-ci.yml")
+    template_policy_ci = _read(".templates/.github/workflows/policy-ci.yml")
+    generator = _read("src/scripts/generate-adc-template.ps1")
+    readme = _read("README.md")
+
+    required_entries = [
+        "## Post-Quantum Communications Standard (PQC/CNSA 2.0)",
+        "All project communication paths MUST use CNSA 2.0-aligned post-quantum cryptography",
+        "ML-KEM (NIST FIPS 203 / CRYSTALS-Kyber lineage)",
+        "ML-DSA (NIST FIPS 204 / CRYSTALS-Dilithium lineage)",
+        "default to ML-KEM-1024",
+        "default to ML-DSA-87",
+        "PQC/CNSA 2.0 communications policy applied",
+        "PQC/CNSA 2.0 baseline",
+        "| **PQC** | Post-Quantum Cryptography",
+        "| **CNSA 2.0** | Commercial National Security Algorithm Suite 2.0",
+        "mandatory PQC/CNSA 2.0 communication baseline",
+        "**Version:** 1.1.23",
+        "**Date:** 2026-06-04 (PQC/CNSA 2.0 communications baseline)",
+    ]
+    combined = "\n".join(
+        [
+            security,
+            prompt_rules,
+            terminology,
+            amendments,
+            pr_checklist,
+            root_pr_template,
+            template_pr_template,
+            root_policy_ci,
+            template_policy_ci,
+            generator,
+            readme,
+        ]
+    )
+
+    for entry in required_entries:
+        assert entry in combined
+
+
 def test_testing_convention_has_quality_strategy_section() -> None:
     content = _read(".templates/standards/conventions/testing.md")
 

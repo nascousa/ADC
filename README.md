@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.22
+**Version:** 1.1.23
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-06-03 (CGA formal name defined as ContextGraphAgent)
+**Date:** 2026-06-04 (PQC/CNSA 2.0 communications baseline)
 
 ## 1. Introduction
 
@@ -202,6 +202,7 @@ Security must be "Shift-Left" and treated as a hard constraint during the coding
 - **Input Sanitization**: "All external inputs in the backend MUST go through our central validation middleware before processing. Trust NOTHING."
 - **Secret Management**: "No secrets, API tokens, or cryptographic keys shall ever be placed in source code or docker-compose files. All credentials must be injected dynamically at runtime via secure secret managers (e.g., AWS Secrets Manager, HashiCorp Vault)."
 - **Default Token Generation Policy**: "Unless a system explicitly requires another format, all tokens MUST default to a randomly generated 35-character string using only `A-Za-z0-9`. Token generation MUST use a cryptographically secure random generator."
+- **Post-Quantum Communications Baseline**: "All project communication paths MUST use CNSA 2.0-aligned post-quantum cryptography. Key establishment MUST use ML-KEM (NIST FIPS 203 / CRYSTALS-Kyber lineage) or an approved CNSA 2.0 PQC successor; digital signatures MUST use ML-DSA (NIST FIPS 204 / CRYSTALS-Dilithium lineage) or an approved CNSA 2.0 PQC successor. Plaintext, legacy-only TLS, and non-PQC communication channels are forbidden unless a time-bounded constitutional exception is approved."
 
 ### 3.13 `conventions/performance.md` (Performance & Optimization)
 Writing code that works is not enough; AI must write code that scales. This file enforces strict rules surrounding algorithm efficiency and resource consumption in production.
