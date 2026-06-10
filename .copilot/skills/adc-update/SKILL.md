@@ -1,6 +1,6 @@
 ---
 name: adc-update
-description: "Use when updating ADC's canonical constitution, templates, prompt rules, standards, ContextGraph/CGA policies, skills, README version, amendments, or template quality tests. Keywords: ADC update, update ADC rules, constitution amendment, template update, prompt-rules, standards, conventions, cga-mcp-server, contextgraph-edge-agent, amendments, README version, generate-adc-template, template quality tests."
+description: "Use when updating ADC's canonical constitution, templates, prompt rules, standards, Context Graph Agent (CGA) policies, skills, README version, amendments, or template quality tests. Keywords: ADC update, update ADC rules, constitution amendment, template update, prompt-rules, standards, conventions, cga-relay, cga-mcp-server, contextgraph-edge-agent, amendments, README version, generate-adc-template, template quality tests."
 argument-hint: "policy/rule to add or change"
 user-invocable: true
 disable-model-invocation: false
@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 Use this skill when changing ADC itself: canonical rules, reusable templates, generated project skeletons, Copilot skills, prompt rules, standards, checklists, runbooks, README version metadata, or tests that protect ADC policy coverage.
 
-This skill is for governance changes in the ADC repository. For applying ADC to another project, use `adc-onboard`. For project progress reporting after a task, use `report-progress`. ContextGraph/CGA onboarding and indexing rules must stay aligned with `.templates/`, `cga-mcp-server`, and `.adc/contextgraph-edge-agent/` conventions.
+This skill is for governance changes in the ADC repository. For applying ADC to another project, use `adc-onboard`. For project progress reporting after a task, use `report-progress`. Context Graph Agent (CGA) onboarding and indexing rules must stay aligned with `.templates/`, preferred `cga-relay`, fallback `cga-mcp-server`, and `.adc/contextgraph-edge-agent/` conventions.
 
 ## Scope
 
@@ -50,7 +50,7 @@ Out of scope:
 Required:
 
 - The rule or policy change requested.
-- Whether the change affects templates, skills, generated skeletons, ContextGraph/CGA wiring, current ADC repo behavior, or all of them.
+- Whether the change affects templates, skills, generated skeletons, Context Graph Agent (CGA) wiring, current ADC repo behavior, or all of them.
 
 Helpful optional inputs:
 
@@ -94,7 +94,7 @@ Do not update every file mechanically. Propagate only to surfaces where the rule
 ### 1. Resolve The Rule And Blast Radius
 
 - Restate the requested policy in concrete terms.
-- Identify whether it affects onboarding, updates, ContextGraph/CGA use, CPMD, CI/CD, frontend, testing, security, devops, or all projects.
+- Identify whether it affects onboarding, updates, Context Graph Agent (CGA) use, CPMD, CI/CD, frontend, testing, security, devops, or all projects.
 - Search for existing wording and contradictions before editing.
 - Preserve user-authored changes and unrelated dirty files.
 

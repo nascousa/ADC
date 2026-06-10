@@ -32,9 +32,9 @@
 ## ContextGraph Use Policy
 - Use `contextgraph-edge-agent/` for local task orchestration and session context only.
 - Use `mcp-servers.json` and ContextGraph MCP endpoints for indexed retrieval/integration workflows only.
-- Ensure `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` contains the `cga-mcp-server` entry and keep it enabled by default for ADC-compliant repositories.
-- Register every project in CGA and automatically install or refresh the paired `cga-mcp-server` profile before substantial feature work.
-- Periodically report project progress to CGA and run `index_repo_changes(repo_path)` after meaningful source, documentation, configuration, or test changes.
+- Ensure `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` contains `cga-relay` before `cga-mcp-server`, with `cga-relay` enabled as the preferred profile and `cga-mcp-server` retained as fallback for ADC-compliant repositories.
+- Register every project in Context Graph Agent (CGA) and automatically install or refresh the paired `cga-relay` profile before substantial feature work.
+- Periodically report project progress to CGA and run `index_repo_changes(repo_path)` through `cga-relay` after meaningful source, documentation, configuration, or test changes.
 - Do not assume a Node-specific local MCP bootstrap; prefer endpoint-first MCP profiles and keep integration language/runtime-agnostic unless the repository explicitly provides a local server implementation.
 - ContextGraph MCP must not replace local compile, lint, unit test, or integration test execution.
 - Treat scratchpad/task outputs as operational context, not canonical product truth.

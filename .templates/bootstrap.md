@@ -9,25 +9,26 @@ Before starting the application, register with the ContextGraph ecosystem:
 
 ```bash
 # 1. Register this project with ContextGraph
-# Open CGA (ContextGraphAgent) Admin UI: http://localhost:18001/admin
+# Open Context Graph Agent (CGA) Admin UI: http://localhost:18001/admin
 # Follow the guided setup to:
 #   - Register this project in the ContextGraph catalog
-#   - Retrieve CGA (ContextGraphAgent) MCP server credentials and edge agent token
+#   - Retrieve Context Graph Agent (CGA) relay/MCP credentials and edge agent token
 #   - Store credentials in .env (see step 2 below)
 
 # 2. Configure ContextGraph environment variables
 echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:18001/mcp/sse" >> .env
+echo "CONTEXTGRAPH_RELAY_URL=http://localhost:18001/mcp/sse" >> .env
 echo "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity" >> .env
 echo "CONTEXTGRAPH_INDEXING_POLICY=auto-incremental" >> .env
 echo "CONTEXTGRAPH_EDGE_AGENT_TOKEN=<token-from-cga-admin>" >> .env
 echo "CONTEXTGRAPH_PROJECT_ID=<project-id-from-cga-admin>" >> .env
 ```
 
-After ContextGraph Edge Agent and CGA MCP Server are integrated, initialize a full repository index before starting feature work:
+After ContextGraph Edge Agent and CGA relay are integrated, initialize a full repository index before starting feature work:
 
 ```text
 Required one-time bootstrap indexing flow
-1) Ensure `mcp-servers.json` contains the `cga-mcp-server` endpoint profile and receives project context from environment variables.
+1) Ensure `mcp-servers.json` contains the `cga-relay` endpoint profile before `cga-mcp-server`, and both profiles receive project context from environment variables.
 2) Run a full-project indexing call through ContextGraph MCP using:
 	- project_id: CONTEXTGRAPH_PROJECT_ID
 	- repo_path: repository root
@@ -36,20 +37,21 @@ Required one-time bootstrap indexing flow
 4) Configure periodic work briefing reports for service starts, feature milestones, validation runs, and releases.
 ```
 
-For all later changes, run `index_repo_changes(repo_path)` through `cga-mcp-server` so modified source, documentation, configuration, and test content is indexed automatically.
+For all later changes, run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable, so modified source, documentation, configuration, and test content is indexed automatically.
 
-## Auto-Enable CGA MCP Server Profile (ADC Standard)
+## Auto-Enable CGA Relay Profile (ADC Standard)
 
-ADC-compliant projects must keep the `cga-mcp-server` profile enabled in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`.
+ADC-compliant projects must keep the `cga-relay` profile enabled before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`.
 
 ```text
 Quick enable checklist for downstream projects
 1) Copy the ADC template `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` into the target project.
-2) Confirm `cga-mcp-server` exists and points to a reachable CGA MCP SSE endpoint (default local dev endpoint: `http://localhost:18001/mcp/sse`).
+2) Confirm `cga-relay` exists before `cga-mcp-server` and points to a reachable CGA relay/MCP SSE endpoint (default local dev endpoint: `http://localhost:18001/mcp/sse`).
 3) Set environment variables before starting your IDE/agent host:
 	- CONTEXTGRAPH_MCP_TOKEN
 	- CONTEXTGRAPH_EDGE_AGENT_TOKEN
 	- CONTEXTGRAPH_PROJECT_ID
+	- CONTEXTGRAPH_RELAY_URL, when the deployment advertises a dedicated relay endpoint
 4) Import the MCP file in your AI client so the server profile is loaded automatically.
 5) Run one full-project index once, then switch to incremental indexing on changed files.
 6) Confirm project progress reporting can reach `CONTEXTGRAPH_BRIEFING_API_URL` without logging raw tokens.

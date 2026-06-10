@@ -64,8 +64,8 @@ def test_security_convention_requires_pqc_cnsa2_communications() -> None:
         "| **PQC** | Post-Quantum Cryptography",
         "| **CNSA 2.0** | Commercial National Security Algorithm Suite 2.0",
         "mandatory PQC/CNSA 2.0 communication baseline",
-        "**Version:** 1.1.23",
-        "**Date:** 2026-06-04 (PQC/CNSA 2.0 communications baseline)",
+        "**Version:** 1.1.24",
+        "**Date:** 2026-06-10 (CGA relay precedence and naming standard)",
     ]
     combined = "\n".join(
         [
@@ -199,25 +199,31 @@ def test_devops_convention_has_required_compose_healthcheck_block() -> None:
         assert entry in content
 
 
-def test_contextgraph_mcp_template_uses_local_dev_sse_endpoint_and_headers() -> None:
+def test_contextgraph_mcp_template_uses_cga_relay_first_with_local_dev_sse_endpoint_and_headers() -> None:
     mcp_profile = _read(".templates/contextgraph-edge-agent/mcp/mcp-servers.json")
     bootstrap = _read(".templates/bootstrap.md")
     devops = _read(".templates/standards/conventions/devops.md")
 
     required_mcp_entries = [
+        '"cga-relay"',
         '"cga-mcp-server"',
         '"url": "http://localhost:18001/mcp/sse"',
         '"Authorization": "Bearer ${CONTEXTGRAPH_MCP_TOKEN}"',
         '"X-Project-ID": "${CONTEXTGRAPH_PROJECT_ID}"',
+        '"CONTEXTGRAPH_RELAY_URL": "${CONTEXTGRAPH_RELAY_URL}"',
+        "Preferred Context Graph Agent (CGA) relay endpoint profile",
+        "Context Graph Agent (CGA) MCP Server fallback endpoint profile",
     ]
     for entry in required_mcp_entries:
         assert entry in mcp_profile
 
+    assert mcp_profile.index('"cga-relay"') < mcp_profile.index('"cga-mcp-server"')
     assert "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:18001/mcp/sse" in bootstrap
+    assert "CONTEXTGRAPH_RELAY_URL=http://localhost:18001/mcp/sse" in bootstrap
     assert "http://localhost:18001/mcp/sse" in devops
 
 
-def test_cga_is_formally_defined_as_contextgraphagent() -> None:
+def test_cga_is_formally_defined_as_context_graph_agent() -> None:
     terminology = _read(".templates/knowledge/terminology.md")
     index = _read(".templates/index.md")
     bootstrap = _read(".templates/bootstrap.md")
@@ -226,15 +232,18 @@ def test_cga_is_formally_defined_as_contextgraphagent() -> None:
     generator = _read("src/scripts/generate-adc-template.ps1")
 
     required_entries = [
-        "| **CGA** | ContextGraphAgent |",
-        "CGA (ContextGraphAgent) Admin UI",
-        "ContextGraphAgent Model Context Protocol endpoint",
-        "CGA (ContextGraphAgent) MCP Server endpoint profile",
+        "| **CGA** | Context Graph Agent |",
+        "Context Graph Agent (CGA) Admin UI",
+        "Context Graph Agent (CGA) relay/MCP credentials",
+        "Context Graph Agent Model Context Protocol endpoint",
+        "Preferred Context Graph Agent (CGA) relay endpoint profile",
     ]
     combined = "\n".join([terminology, index, bootstrap, devops, mcp_profile, generator])
 
     for entry in required_entries:
         assert entry in combined
+
+    assert "ContextGraph" + "Agent" not in combined
 
 
 def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> None:
@@ -244,14 +253,16 @@ def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> N
 
     required_entries = [
         "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity",
+        "CONTEXTGRAPH_RELAY_URL=http://localhost:18001/mcp/sse",
         "CONTEXTGRAPH_INDEXING_POLICY=auto-incremental",
         "- **Mandatory Registration**",
-        "- **Automatic MCP Installation**",
+        "- **Automatic Relay Installation**",
         "## CGA Progress Reporting and Indexing Policy",
         "workassist_record_activity",
         "index_repo_changes(repo_path)",
-        "Register every project in CGA",
+        "Register every project in Context Graph Agent (CGA)",
         "Periodically report project progress to CGA",
+        "cga-relay",
     ]
     combined = "\n".join([bootstrap, devops, prompt_rules])
 
@@ -272,6 +283,8 @@ def test_generate_adc_template_script_contains_default_web_app_policies() -> Non
         "FastAPI Default",
         "PostgreSQL plus `pgvector`",
         "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity",
+        "CONTEXTGRAPH_RELAY_URL=http://localhost:18001/mcp/sse",
+        "cga-relay",
         "index_repo_changes(repo_path)",
     ]
 
@@ -300,8 +313,9 @@ def test_adc_skills_use_current_contextgraph_standard() -> None:
 
     required_entries = [
         "contextgraph-edge-agent",
+        "cga-relay",
         "cga-mcp-server",
-        "ContextGraph/CGA",
+        "Context Graph Agent (CGA)",
         "CONTEXTGRAPH_BRIEFING_API_URL",
         "index_repo_changes(repo_path)",
         "FastAPI",
@@ -311,11 +325,15 @@ def test_adc_skills_use_current_contextgraph_standard() -> None:
         "D:\\Repos\\ADC",
     ]
     forbidden_entries = [
-        "rd-onboard",
-        "rd-edge-agent",
-        "RepoDepot",
-        "RD MCP",
-        "RD project",
+        "rd-" + "onboard",
+        "rd-" + "edge-agent",
+        "Repo" + "Depot",
+        "RD " + "MCP",
+        "RD " + "project",
+        "R" + "DA",
+        "R" + "DA" + "+R" + "D",
+        "ContextGraph" + "/CGA",
+        "ContextGraph" + "Agent",
         "src/tests/test_template_quality.py",
         "D:\\Repos\\ARKSOFT\\ADC",
     ]

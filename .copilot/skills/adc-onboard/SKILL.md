@@ -1,6 +1,6 @@
 ---
 name: adc-onboard
-description: "Use when onboarding an existing or new project into ADC governance: create or repair .adc structure, project context files, prompt rules, standards, planning, knowledge, ContextGraph/CGA MCP wiring, IDE trigger files, and validation. Keywords: ADC onboard, initialize ADC, create .adc, project governance, ADC structure, ADC template, cga-mcp-server, contextgraph-edge-agent, copilot instructions, adcignore."
+description: "Use when onboarding an existing or new project into ADC governance: create or repair .adc structure, project context files, prompt rules, standards, planning, knowledge, Context Graph Agent (CGA) MCP wiring, IDE trigger files, and validation. Keywords: ADC onboard, initialize ADC, create .adc, project governance, ADC structure, ADC template, cga-relay, cga-mcp-server, contextgraph-edge-agent, copilot instructions, adcignore."
 argument-hint: "project path and project name"
 user-invocable: true
 disable-model-invocation: false
@@ -8,9 +8,9 @@ disable-model-invocation: false
 
 # ADC Project Onboarding
 
-Use this skill to bring a project under the Autonomous Development Constitution (ADC). The goal is to create or repair the project's `.adc/` governance layer so future AI and human work starts from stable, project-local context and the project can integrate with ContextGraph/CGA consistently.
+Use this skill to bring a project under the Autonomous Development Constitution (ADC). The goal is to create or repair the project's `.adc/` governance layer so future AI and human work starts from stable, project-local context and the project can integrate with Context Graph Agent (CGA) consistently.
 
-This skill applies to target application repositories. For changing ADC itself, use `adc-update`. For project activity reporting after onboarding, use `report-progress`. ContextGraph project registration, token creation, and full indexing should follow the CGA Admin UI and `cga-mcp-server` workflow described in the generated ADC files.
+This skill applies to target application repositories. For changing ADC itself, use `adc-update`. For project activity reporting after onboarding, use `report-progress`. ContextGraph project registration, token creation, and full indexing should follow the Context Graph Agent (CGA) Admin UI and preferred `cga-relay` workflow described in the generated ADC files, with `cga-mcp-server` retained as fallback.
 
 ## Scope
 
@@ -23,12 +23,12 @@ In scope:
 5. Add or update IDE trigger files and `.github/copilot-instructions.md` pointers.
 6. Add `.adcignore` when needed to protect secrets, build output, caches, and generated files.
 7. Validate that generated ADC context is factual, project-specific, and secret-free.
-8. Ensure the `cga-mcp-server` profile and ContextGraph progress/indexing guidance are present.
+8. Ensure the `cga-relay` profile appears before the fallback `cga-mcp-server` profile and ContextGraph progress/indexing guidance is present.
 
 Out of scope:
 
 1. Changing ADC's canonical templates or constitution rules. Use `adc-update`.
-2. Creating, printing, or storing CGA tokens. Use CGA Admin UI and environment variables after the ADC shell exists.
+2. Creating, printing, or storing CGA tokens. Use the Context Graph Agent (CGA) Admin UI and environment variables after the ADC shell exists.
 3. Running production deployment. Use CPMD or deployment skills.
 4. Inventing architecture decisions, credentials, service URLs, or project status.
 
@@ -184,14 +184,14 @@ Carry these defaults into the target project's ADC files unless project-local po
 - For webpage testing, default to VS Code built-in browser tooling; use external Browser Agent only for explicit exceptions.
 - For frontend visualization, use `d3-tube-map` for dynamic metro-style state-machine indicators, AntV or ECharts for normal node/edge graphs, and `sigma` for 2.5D graph/network views.
 - ContextGraph MCP is for retrieval, indexing, progress reporting, and external context operations; it must not replace local build, lint, unit test, or integration test execution.
-- Projects should periodically report progress to CGA and run `index_repo_changes(repo_path)` through `cga-mcp-server` after meaningful source, documentation, configuration, or test changes.
+- Projects should periodically report progress to CGA and run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable, after meaningful source, documentation, configuration, or test changes.
 
 ### 6. Wire Tooling And Triggers
 
 - Add or update `.github/copilot-instructions.md` to point agents to `.adc/index.md` first.
 - Add IDE trigger files that instruct tools to load `.adc/index.md`, `.adc/prompt-rules.md`, and relevant standards.
 - Add `.adcignore` to exclude `.env`, secrets, build output, dependency folders, logs, caches, and large generated assets.
-- Add or refresh `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` with a `cga-mcp-server` endpoint profile. Use environment variable placeholders only; do not write token values into tracked files.
+- Add or refresh `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` with a `cga-relay` endpoint profile before the fallback `cga-mcp-server` profile. Use environment variable placeholders only; do not write token values into tracked files.
 - Include ContextGraph progress reporting and indexing guidance: `CONTEXTGRAPH_BRIEFING_API_URL`, `CONTEXTGRAPH_INDEXING_POLICY=auto-incremental`, periodic reporting, and `index_repo_changes(repo_path)` after meaningful changes.
 
 ### 7. Validate
@@ -219,7 +219,7 @@ Final output should include:
 - ADC files created or updated.
 - Project facts used and any unknowns left unresolved.
 - Validation performed.
-- ContextGraph/CGA registration, MCP profile, indexing, and progress-reporting status or next step.
+- Context Graph Agent (CGA) registration, MCP profile, indexing, and progress-reporting status or next step.
 - Any blockers requiring human input.
 
 ## Success Criteria
@@ -230,5 +230,5 @@ ADC onboarding is complete when:
 2. Required ADC files contain project-specific, factual content.
 3. Secrets are excluded and `.adcignore` protects sensitive/noisy paths.
 4. Local AI instructions point to `.adc/index.md` and `.adc/prompt-rules.md`.
-5. The `cga-mcp-server` profile is present when applicable, with real CGA tokens kept in environment variables and initial indexing handled through ContextGraph after registration.
+5. The `cga-relay` profile is present before fallback `cga-mcp-server` when applicable, with real CGA tokens kept in environment variables and initial indexing handled through ContextGraph after registration.
 6. Validation confirms structure, frontmatter, and no obvious secret leakage.
