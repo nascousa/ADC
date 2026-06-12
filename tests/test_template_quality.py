@@ -60,12 +60,14 @@ def test_security_convention_requires_pqc_cnsa2_communications() -> None:
         "default to ML-KEM-1024",
         "default to ML-DSA-87",
         "PQC/CNSA 2.0 communications policy applied",
+        "CGA relay-first policy applied",
+        "apply the CGA relay-first policy",
         "PQC/CNSA 2.0 baseline",
         "| **PQC** | Post-Quantum Cryptography",
         "| **CNSA 2.0** | Commercial National Security Algorithm Suite 2.0",
         "mandatory PQC/CNSA 2.0 communication baseline",
-        "**Version:** 1.1.24",
-        "**Date:** 2026-06-10 (CGA relay precedence and naming standard)",
+        "**Version:** 1.1.25",
+        "**Date:** 2026-06-12 (mandatory CGA relay-first policy)",
     ]
     combined = "\n".join(
         [
@@ -211,7 +213,7 @@ def test_contextgraph_mcp_template_uses_cga_relay_first_with_local_dev_sse_endpo
         '"Authorization": "Bearer ${CONTEXTGRAPH_MCP_TOKEN}"',
         '"X-Project-ID": "${CONTEXTGRAPH_PROJECT_ID}"',
         '"CONTEXTGRAPH_RELAY_URL": "${CONTEXTGRAPH_RELAY_URL}"',
-        "Preferred Context Graph Agent (CGA) relay endpoint profile",
+        "Mandatory relay-first Context Graph Agent (CGA) relay endpoint profile",
         "Context Graph Agent (CGA) MCP Server fallback endpoint profile",
     ]
     for entry in required_mcp_entries:
@@ -236,7 +238,7 @@ def test_cga_is_formally_defined_as_context_graph_agent() -> None:
         "Context Graph Agent (CGA) Admin UI",
         "Context Graph Agent (CGA) relay/MCP credentials",
         "Context Graph Agent Model Context Protocol endpoint",
-        "Preferred Context Graph Agent (CGA) relay endpoint profile",
+        "Mandatory relay-first Context Graph Agent (CGA) relay endpoint profile",
     ]
     combined = "\n".join([terminology, index, bootstrap, devops, mcp_profile, generator])
 
@@ -250,6 +252,10 @@ def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> N
     bootstrap = _read(".templates/bootstrap.md")
     devops = _read(".templates/standards/conventions/devops.md")
     prompt_rules = _read(".templates/prompt-rules.md")
+    index = _read(".templates/index.md")
+    mcp_profile = _read(".templates/contextgraph-edge-agent/mcp/mcp-servers.json")
+    generator = _read("src/scripts/generate-adc-template.ps1")
+    onboard_skill = _read(".copilot/skills/adc-onboard/SKILL.md")
 
     required_entries = [
         "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity",
@@ -257,17 +263,36 @@ def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> N
         "CONTEXTGRAPH_INDEXING_POLICY=auto-incremental",
         "- **Mandatory Registration**",
         "- **Automatic Relay Installation**",
+        "Project bootstrap MUST automatically install or refresh the paired `cga-relay` profile",
+        "Relay-First Execution Policy",
+        "All ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` first",
+        "`cga-mcp-server` MAY be used only after relay is unavailable",
+        "fallback reason MUST be documented",
+        "Local dev MCP clients MUST route `cga-relay`",
         "## CGA Progress Reporting and Indexing Policy",
         "workassist_record_activity",
         "index_repo_changes(repo_path)",
+        "MUST run `index_repo_changes(repo_path)` through `cga-relay` first",
         "Register every project in Context Graph Agent (CGA)",
         "Periodically report project progress to CGA",
+        "Mandatory relay-first Context Graph Agent (CGA) relay endpoint profile",
+        "mandatory relay-first `cga-relay` workflow",
         "cga-relay",
     ]
-    combined = "\n".join([bootstrap, devops, prompt_rules])
+    combined = "\n".join([bootstrap, devops, prompt_rules, index, mcp_profile, generator, onboard_skill])
 
     for entry in required_entries:
         assert entry in combined
+
+    forbidden_entries = [
+        "Project bootstrap SHOULD automatically install or refresh the paired `cga-relay` profile",
+        "agents SHOULD run `index_repo_changes(repo_path)` through `cga-relay` first",
+        "Local dev MCP clients SHOULD route `cga-relay`",
+        "enabled as the preferred profile",
+        "prefer CGA relay wiring",
+    ]
+    for entry in forbidden_entries:
+        assert entry not in combined
 
 
 def test_generate_adc_template_script_contains_default_web_app_policies() -> None:

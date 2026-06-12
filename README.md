@@ -1,9 +1,9 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.24
+**Version:** 1.1.25
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-06-10 (CGA relay precedence and naming standard)
+**Date:** 2026-06-12 (mandatory CGA relay-first policy)
 
 ## 1. Introduction
 
@@ -264,12 +264,13 @@ To achieve true project portability for AI Agents, the project must ship with it
 - **Portability**: "When cloning this repository on a new machine, the user or AI can directly import `.adc/mcp/mcp-servers.json` into their local AI client (like Cursor or Claude Desktop) to instantly gain access to the project's dedicated database connections, API wrappers, or internal corporate context tools."
 - **Constraint**: "Any new external integrations (e.g., adding a PostgreSQL database) MUST be accompanied by an update to the MCP configuration so that future AI agents inherit the ability to query that database directly."
 - **CGA Name Definition**: "CGA is the formal abbreviation for Context Graph Agent. Use `Context Graph Agent (CGA)` when expanding the acronym in product, template, and governance text."
-- **CGA Relay Profile Standard**: "ADC-compliant projects MUST provide a preconfigured `cga-relay` entry before `cga-mcp-server` in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` so new repositories prefer CGA relay wiring while retaining the MCP server fallback."
+- **CGA Relay Profile Standard**: "ADC-compliant projects MUST provide a preconfigured `cga-relay` entry before `cga-mcp-server` in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` so new repositories enforce CGA relay-first wiring while retaining the MCP server fallback."
 - **CGA MCP Server Fallback Standard**: "ADC-compliant projects MUST keep a `cga-mcp-server` fallback profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` for compatibility when `cga-relay` is unavailable."
+- **CGA Relay-First Execution Policy**: "All ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` first. `cga-mcp-server` MAY be used only after relay is unavailable, and the fallback reason MUST be documented in task or validation notes."
 - **Runtime-Neutral MCP Rule**: "CGA MCP integration MUST be endpoint-first and language-agnostic by default. Do not require a Node-specific local entrypoint unless the target repository explicitly ships one."
 - **Default CGA Relay Endpoint**: "For the local dev CGA API profile, route `cga-relay` to the SSE MCP endpoint `http://localhost:18001/mcp/sse` with `Authorization` and `X-Project-ID` headers unless the deployment advertises a dedicated relay endpoint."
 - **ContextGraph Bootstrap Indexing**: "After integrating ContextGraph Edge Agent and CGA relay for a project, you MUST initialize one full-project index through ContextGraph before executing feature tasks. Subsequent updates MUST use incremental indexing on changed files."
-- **CGA Progress Reporting and Change Indexing**: "Projects SHOULD periodically report service starts, feature milestones, validation runs, and releases to CGA, and SHOULD run `index_repo_changes(repo_path)` after meaningful source, documentation, configuration, or test changes."
+- **CGA Progress Reporting and Change Indexing**: "Projects SHOULD periodically report service starts, feature milestones, validation runs, and releases to CGA, and MUST run `index_repo_changes(repo_path)` through `cga-relay` first after meaningful source, documentation, configuration, or test changes, falling back to `cga-mcp-server` only when relay is unavailable and documented."
 - **ContextGraph Policy Rule**: "Use ContextGraph Edge Agent workspace files (`.adc/contextgraph-edge-agent/tasks/`, `.adc/contextgraph-edge-agent/scratchpad/`) for orchestration state only. Canonical requirements and architecture decisions MUST remain in planning/standards/knowledge files."
 - **ContextGraph Execution Rule**: "ContextGraph MCP integrations are for retrieval/indexing and external context operations. Local build/test/deploy execution MUST remain on native project tooling."
 - **ContextGraph Secret Rule**: "ContextGraph credentials (`CONTEXTGRAPH_PROJECT_ID`, `CONTEXTGRAPH_MCP_TOKEN`, `CONTEXTGRAPH_EDGE_AGENT_TOKEN`) MUST be injected through environment variables and MUST NOT be committed in tracked files."

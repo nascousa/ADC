@@ -19,10 +19,10 @@ This file defines all domain-specific terminology, abbreviations, and shortcuts 
 | Term | Definition |
 |---|---|
 | **ContextGraph** | Central artifact catalog, project registry, and orchestration service; local Context Graph Agent (CGA) Admin UI runs at `http://localhost:18001/admin` |
-| **CGA Relay** | Preferred Context Graph Agent relay profile (`cga-relay`) for programmatic ContextGraph access; default local dev SSE endpoint is `http://localhost:18001/mcp/sse` unless the deployment advertises a dedicated relay endpoint |
-| **CGA MCP Server** | Context Graph Agent Model Context Protocol endpoint retained as the compatibility fallback profile (`cga-mcp-server`) |
+| **CGA Relay** | Mandatory relay-first Context Graph Agent profile (`cga-relay`) for programmatic ContextGraph access; default local dev SSE endpoint is `http://localhost:18001/mcp/sse` unless the deployment advertises a dedicated relay endpoint |
+| **CGA MCP Server** | Context Graph Agent Model Context Protocol endpoint retained as the compatibility fallback profile (`cga-mcp-server`) only after `cga-relay` is unavailable |
 | **ContextGraph Edge Agent** | Local execution and orchestration agent; workspace stored in `.adc/contextgraph-edge-agent`, implementation in `src/contextgraph-edge-agent` |
-| **CGA Relay Profile** | Standard preferred MCP profile name (`cga-relay`) used by ADC templates for auto-loading CGA relay wiring before `cga-mcp-server` |
+| **CGA Relay Profile** | Standard mandatory first-attempt MCP profile name (`cga-relay`) used by ADC templates for auto-loading CGA relay wiring before `cga-mcp-server` |
 | **CGA MCP Server Profile** | Compatibility MCP server profile name (`cga-mcp-server`) kept by ADC templates as a fallback when `cga-relay` is unavailable |
 | **Context Graph Agent (CGA) Admin UI** | Context Graph Agent local setup surface for project registration and token creation at `http://localhost:18001/admin` |
 

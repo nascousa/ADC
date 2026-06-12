@@ -125,9 +125,10 @@ It defines the exact rules, constraints, and architecture that AI Agents must fo
 This project **MUST** integrate with the ContextGraph ecosystem:
 - **ContextGraph Project**: Central repository and artifact management system (registration via Context Graph Agent (CGA) Admin UI at `http://localhost:18001/admin`)
 - **ContextGraph Edge Agent** (`src/contextgraph-edge-agent`): Local execution and orchestration agent
-- **CGA Relay**: Preferred Context Graph Agent relay profile for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:18001/mcp/sse` unless a dedicated relay endpoint is advertised)
+- **CGA Relay**: Mandatory relay-first Context Graph Agent profile for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:18001/mcp/sse` unless a dedicated relay endpoint is advertised)
 - **CGA MCP Server**: Compatibility fallback profile for programmatic ContextGraph access when `cga-relay` is unavailable
-- **CGA Relay Profile Standard**: `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST include a `cga-relay` entry before `cga-mcp-server` so ADC-based projects prefer CGA relay wiring while retaining the MCP server fallback.
+- **CGA Relay Profile Standard**: `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST include a `cga-relay` entry before `cga-mcp-server` so ADC-based projects enforce CGA relay-first wiring while retaining the MCP server fallback.
+- **CGA Relay-First Execution Policy**: All ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` first. `cga-mcp-server` MAY be used only after relay is unavailable, and the fallback reason MUST be documented in task or validation notes.
 - **Initial ContextGraph Indexing**: Immediately after ContextGraph Edge Agent + CGA relay integration, run full-project indexing once so retrieval/review tools can access the entire repository context.
 
 ContextGraph MCP access is endpoint-first by default. A local MCP implementation is optional and repository-specific.
@@ -173,14 +174,15 @@ Required one-time bootstrap indexing flow
    - repo_path: repository root
    - changed_files: all tracked source and documentation files
 3) Treat indexing as successful only after the ContextGraph service returns a successful completion status.
-4) Configure periodic work briefing reports for service starts, feature milestones, validation runs, and releases.
+4) Treat `cga-relay` as the mandatory first-attempt MCP profile for indexing, retrieval, progress reporting, and ContextGraph integration calls.
+5) Configure periodic work briefing reports for service starts, feature milestones, validation runs, and releases.
 ```
 
-For all later changes, run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable, so modified source, documentation, configuration, and test content is indexed automatically.
+For all later changes, MUST run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable and the fallback reason is documented, so modified source, documentation, configuration, and test content is indexed automatically.
 
 ## Auto-Enable CGA Relay Profile (ADC Standard)
 
-ADC-compliant projects must keep the `cga-relay` profile enabled before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`.
+ADC-compliant projects must keep the `cga-relay` profile enabled before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`, and must attempt `cga-relay` before any fallback ContextGraph MCP profile.
 
 ```text
 Quick enable checklist for downstream projects
@@ -261,9 +263,9 @@ curl http://localhost:18001/health
 ## ContextGraph Use Policy
 - Use `contextgraph-edge-agent/` for local task orchestration and session context only.
 - Use `mcp-servers.json` and ContextGraph MCP endpoints for indexed retrieval/integration workflows only.
-- Ensure `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` contains `cga-relay` before `cga-mcp-server`, with `cga-relay` enabled as the preferred profile and `cga-mcp-server` retained as fallback for ADC-compliant repositories.
-- Register every project in Context Graph Agent (CGA) and automatically install or refresh the paired `cga-relay` profile before substantial feature work.
-- Periodically report project progress to CGA and run `index_repo_changes(repo_path)` through `cga-relay` after meaningful source, documentation, configuration, or test changes.
+- Ensure `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST contain `cga-relay` before `cga-mcp-server`, with `cga-relay` enabled and attempted first while `cga-mcp-server` is retained only as fallback for ADC-compliant repositories.
+- Register every project in Context Graph Agent (CGA) and MUST automatically install or refresh the paired `cga-relay` profile before substantial feature work.
+- Periodically report project progress to CGA and MUST run `index_repo_changes(repo_path)` through `cga-relay` first after meaningful source, documentation, configuration, or test changes; use `cga-mcp-server` only when relay is unavailable and document the fallback reason.
 - Do not assume a Node-specific local MCP bootstrap; prefer endpoint-first MCP profiles and keep integration language/runtime-agnostic unless the repository explicitly provides a local server implementation.
 - ContextGraph MCP must not replace local compile, lint, unit test, or integration test execution.
 - Treat scratchpad/task outputs as operational context, not canonical product truth.
@@ -317,25 +319,26 @@ curl http://localhost:18001/health
 ## ContextGraph Integration Policy
 - **Authoritative Onboarding URL**: Integration with ContextGraph MUST use the Context Graph Agent (CGA) Admin UI at `http://localhost:18001/admin` as the local setup surface for project registration and token creation.
 - **Mandatory Registration**: All ADC-compliant projects MUST be registered in Context Graph Agent (CGA) before feature work begins unless CGA is temporarily unavailable and the exception is documented.
-- **Automatic Relay Installation**: Project bootstrap SHOULD automatically install or refresh the paired `cga-relay` profile before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` using environment-variable backed credentials.
+- **Automatic Relay Installation**: Project bootstrap MUST automatically install or refresh the paired `cga-relay` profile before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` using environment-variable backed credentials.
 - **No Unreviewed Deviation**: Agents and developers MUST NOT use alternate ContextGraph onboarding flows unless explicitly approved in the same PR description.
 - **Traceability Requirement**: Any PR that introduces or changes ContextGraph integration MUST include a short "ContextGraph integration notes" section describing what step(s) from the onboarding URL were applied.
 - **MCP Alignment**: If ContextGraph integration adds or changes external service endpoints or credentials, `mcp-servers.json` MUST be updated in the same change set.
 
 ## ContextGraph Edge Agent and ContextGraph MCP Use Policy
 - **Responsibility Split**: `contextgraph-edge-agent/` is for local orchestration artifacts (task queues, scratchpad notes, MCP wiring). ContextGraph MCP is for programmatic integration/retrieval against ContextGraph services.
-- **CGA Relay Profile Baseline**: ADC templates MUST ship a `cga-relay` entry before `cga-mcp-server` in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` so downstream repositories auto-inherit preferred CGA relay wiring with MCP server fallback.
+- **CGA Relay Profile Baseline**: ADC templates MUST ship a `cga-relay` entry before `cga-mcp-server` in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` so downstream repositories auto-inherit mandatory relay-first CGA wiring with MCP server fallback.
+- **Relay-First Execution Policy**: All ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` first. `cga-mcp-server` MAY be used only after relay is unavailable, and the fallback reason MUST be documented in task or validation notes.
 - **Runtime Neutrality**: MCP wiring MUST be language-agnostic by default. Do not require a Node-specific local entrypoint unless that repository explicitly ships and maintains one.
 - **Execution Policy**: ContextGraph MCP MUST NOT be used to replace local compile, lint, unit test, or integration test execution. Build/test must run through project-native tooling.
 - **Authority Policy**: Outputs from ContextGraph Edge Agent scratchpad/tasks are operational context, not product truth. Canonical product rules remain in constitution/convention/planning files.
 - **Network Policy**: Local ContextGraph services are expected on localhost endpoints; upstream ContextGraph access MUST use the configured upstream URL and approved credentials only.
-- **Default Relay Endpoint**: Local dev MCP clients SHOULD route `cga-relay` to `http://localhost:18001/mcp/sse` unless the CGA deployment explicitly advertises a different relay or MCP SSE endpoint.
+- **Default Relay Endpoint**: Local dev MCP clients MUST route `cga-relay` to `http://localhost:18001/mcp/sse` unless the CGA deployment explicitly advertises a different relay or MCP SSE endpoint.
 - **Secret Policy**: Tokens and project identifiers (`CONTEXTGRAPH_MCP_TOKEN`, `CONTEXTGRAPH_EDGE_AGENT_TOKEN`, `CONTEXTGRAPH_PROJECT_ID`) MUST be injected via environment variables and never committed to repository files.
 - **Change Policy**: Any PR changing ContextGraph integration behavior MUST update both `bootstrap.md` and `mcp-servers.json`, and include validation notes.
 
 ## CGA Progress Reporting and Indexing Policy
 - **Automatic Progress Reporting**: Projects SHOULD emit periodic progress reports to CGA through the project work briefing API or `workassist_record_activity` MCP tool for service starts, template generation, feature milestones, validation runs, and releases.
-- **Change Indexing**: After meaningful source, documentation, configuration, or test changes, agents SHOULD run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable, so CGA indexes modified content.
+- **Change Indexing**: After meaningful source, documentation, configuration, or test changes, agents MUST run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable and documented, so CGA indexes modified content.
 - **Periodic Indexing**: Long-running projects SHOULD schedule periodic incremental indexing even when no single task explicitly requests it, so CGA remains current.
 - **Failure Handling**: If CGA reporting or indexing fails, continue local build/test validation, record the failure in `.adc/contextgraph-edge-agent/scratchpad/session.md`, and retry when CGA is reachable.
 '@;
@@ -418,6 +421,7 @@ curl http://localhost:18001/health
 - **2026-05-26**: Added default web-app standards for built-in browser shared-page debugging, FastAPI, PostgreSQL `pgvector`, dark mode, Vanta.js login backgrounds, CGA progress reporting, and automatic change indexing.
 - **2026-06-04**: Added the mandatory PQC/CNSA 2.0 communication baseline requiring ML-KEM/ML-DSA or approved CNSA 2.0 PQC successors for all project communication paths.
 - **2026-06-10**: Added `cga-relay` as the preferred CGA MCP profile before `cga-mcp-server`, retained `cga-mcp-server` as fallback, and standardized the expanded name to Context Graph Agent (CGA).
+- **2026-06-12**: Elevated CGA relay precedence to a mandatory relay-first policy: all ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` before `cga-mcp-server`, with fallback reasons documented.
 '@;
 
     "conventions\security.md" = @'
@@ -507,6 +511,7 @@ curl http://localhost:18001/health
 - [ ] Are all unit tests and E2E tests passing?
 - [ ] Did I verify the CVSS score of all new dependencies introduced?
 - [ ] Did I verify that all added or changed communication paths use PQC/CNSA 2.0-compliant ML-KEM/ML-DSA or approved CRYSTALS/PQC successor algorithms?
+- [ ] Did I verify that ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations apply the CGA relay-first policy and document any `cga-mcp-server` fallback reason?
 - [ ] Did I auto-update the Mermaid diagrams in `.adc/knowledge/diagrams/` to match my architectural modifications?
 - [ ] Are Docker CPU/Memory resource limits properly set as environment variables?
 '@;
@@ -527,7 +532,7 @@ curl http://localhost:18001/health
                 "CONTEXTGRAPH_PROJECT_ID": "${CONTEXTGRAPH_PROJECT_ID}",
                 "CONTEXTGRAPH_RELAY_URL": "${CONTEXTGRAPH_RELAY_URL}"
             },
-            "description": "Preferred Context Graph Agent (CGA) relay endpoint profile for ADC projects; use before cga-mcp-server"
+            "description": "Mandatory relay-first Context Graph Agent (CGA) relay endpoint profile for ADC projects; attempt before cga-mcp-server"
         },
         "cga-mcp-server": {
             "transport": "http",

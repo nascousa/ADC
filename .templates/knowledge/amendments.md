@@ -12,5 +12,6 @@
 - **2026-06-02**: Defined CGA as the formal abbreviation for Context Graph Agent across ADC terminology, onboarding, and MCP profile templates.
 - **2026-06-04**: Added the mandatory PQC/CNSA 2.0 communication baseline requiring ML-KEM/ML-DSA or approved CNSA 2.0 PQC successors for all project communication paths.
 - **2026-06-10**: Added `cga-relay` as the preferred CGA MCP profile before `cga-mcp-server`, retained `cga-mcp-server` as fallback, and standardized the expanded name to Context Graph Agent (CGA).
+- **2026-06-12**: Elevated CGA relay precedence to a mandatory relay-first policy: all ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` before `cga-mcp-server`, with fallback reasons documented.
 
 

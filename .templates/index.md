@@ -24,9 +24,10 @@ It defines the exact rules, constraints, and architecture that AI Agents must fo
 This project **MUST** integrate with the ContextGraph ecosystem:
 - **ContextGraph Project**: Central repository and artifact management system (registration via Context Graph Agent (CGA) Admin UI at `http://localhost:18001/admin`)
 - **ContextGraph Edge Agent** (`src/contextgraph-edge-agent`): Local execution and orchestration agent
-- **CGA Relay**: Preferred Context Graph Agent relay profile for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:18001/mcp/sse` unless a dedicated relay endpoint is advertised)
+- **CGA Relay**: Mandatory relay-first Context Graph Agent profile for programmatic ContextGraph access (default local dev SSE endpoint: `http://localhost:18001/mcp/sse` unless a dedicated relay endpoint is advertised)
 - **CGA MCP Server**: Compatibility fallback profile for programmatic ContextGraph access when `cga-relay` is unavailable
-- **CGA Relay Profile Standard**: `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST include a `cga-relay` entry before `cga-mcp-server` so ADC-based projects prefer CGA relay wiring while retaining the MCP server fallback.
+- **CGA Relay Profile Standard**: `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST include a `cga-relay` entry before `cga-mcp-server` so ADC-based projects enforce CGA relay-first wiring while retaining the MCP server fallback.
+- **CGA Relay-First Execution Policy**: All ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` first. `cga-mcp-server` MAY be used only after relay is unavailable, and the fallback reason MUST be documented in task or validation notes.
 - **Initial ContextGraph Indexing**: Immediately after ContextGraph Edge Agent + CGA relay integration, run full-project indexing once so retrieval/review tools can access the entire repository context.
 
 ContextGraph MCP access is endpoint-first by default. A local MCP implementation is optional and repository-specific.

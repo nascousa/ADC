@@ -34,14 +34,15 @@ Required one-time bootstrap indexing flow
 	- repo_path: repository root
 	- changed_files: all tracked source and documentation files
 3) Treat indexing as successful only after the ContextGraph service returns a successful completion status.
-4) Configure periodic work briefing reports for service starts, feature milestones, validation runs, and releases.
+4) Treat `cga-relay` as the mandatory first-attempt MCP profile for indexing, retrieval, progress reporting, and ContextGraph integration calls.
+5) Configure periodic work briefing reports for service starts, feature milestones, validation runs, and releases.
 ```
 
-For all later changes, run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable, so modified source, documentation, configuration, and test content is indexed automatically.
+For all later changes, MUST run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable and the fallback reason is documented, so modified source, documentation, configuration, and test content is indexed automatically.
 
 ## Auto-Enable CGA Relay Profile (ADC Standard)
 
-ADC-compliant projects must keep the `cga-relay` profile enabled before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`.
+ADC-compliant projects must keep the `cga-relay` profile enabled before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`, and must attempt `cga-relay` before any fallback ContextGraph MCP profile.
 
 ```text
 Quick enable checklist for downstream projects

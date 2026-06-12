@@ -4,5 +4,6 @@
 - [ ] Are all unit tests and E2E tests passing?
 - [ ] Did I verify the CVSS score of all new dependencies introduced?
 - [ ] Did I verify that all added or changed communication paths use PQC/CNSA 2.0-compliant ML-KEM/ML-DSA or approved CRYSTALS/PQC successor algorithms?
+- [ ] Did I verify that ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations apply the CGA relay-first policy and document any `cga-mcp-server` fallback reason?
 - [ ] Did I auto-update the Mermaid diagrams in `.adc/knowledge/diagrams/` to match my architectural modifications?
 - [ ] Are Docker CPU/Memory resource limits properly set as environment variables?

@@ -10,7 +10,7 @@ disable-model-invocation: false
 
 Use this skill when changing ADC itself: canonical rules, reusable templates, generated project skeletons, Copilot skills, prompt rules, standards, checklists, runbooks, README version metadata, or tests that protect ADC policy coverage.
 
-This skill is for governance changes in the ADC repository. For applying ADC to another project, use `adc-onboard`. For project progress reporting after a task, use `report-progress`. Context Graph Agent (CGA) onboarding and indexing rules must stay aligned with `.templates/`, preferred `cga-relay`, fallback `cga-mcp-server`, and `.adc/contextgraph-edge-agent/` conventions.
+This skill is for governance changes in the ADC repository. For applying ADC to another project, use `adc-onboard`. For project progress reporting after a task, use `report-progress`. Context Graph Agent (CGA) onboarding and indexing rules must stay aligned with `.templates/`, mandatory relay-first `cga-relay`, fallback `cga-mcp-server`, and `.adc/contextgraph-edge-agent/` conventions.
 
 ## Scope
 
