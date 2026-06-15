@@ -1,15 +1,15 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.25
+**Version:** 1.1.27
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-06-12 (mandatory CGA relay-first policy)
+**Date:** 2026-06-15 (mandatory CGA-Relay change aggregation policy)
 
 ## 1. Introduction
 
 The **Autonomous Development Constitution (ADC)** is a standardized framework designed to provide highly structured context for large codebases, AI assistants (agents), and human developers. 
 
-ADC now also emits lightweight project activity into Context Graph Agent (CGA) when ContextGraph project credentials are configured. The built-in FastAPI service reports `service_start`, and `src/scripts/generate-adc-template.ps1` reports `template_generation` on successful scaffold completion.
+ADC now also requires project change information to be aggregated into Context Graph Agent (CGA) through CGA-Relay when ContextGraph project credentials are configured. This includes indexing, change summaries, progress updates, validation evidence, release events, blockers, risks, and related PR/PBI metadata.
 
 The core philosophy of ADC is to manage the "soul of the project" (architecture, conventions, domain knowledge, and AI instructions) alongside the "body of the project" (the source code). It acts as the absolute **"Digital Constitution"** of the repository.
 
@@ -266,11 +266,13 @@ To achieve true project portability for AI Agents, the project must ship with it
 - **CGA Name Definition**: "CGA is the formal abbreviation for Context Graph Agent. Use `Context Graph Agent (CGA)` when expanding the acronym in product, template, and governance text."
 - **CGA Relay Profile Standard**: "ADC-compliant projects MUST provide a preconfigured `cga-relay` entry before `cga-mcp-server` in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` so new repositories enforce CGA relay-first wiring while retaining the MCP server fallback."
 - **CGA MCP Server Fallback Standard**: "ADC-compliant projects MUST keep a `cga-mcp-server` fallback profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` for compatibility when `cga-relay` is unavailable."
-- **CGA Relay-First Execution Policy**: "All ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` first. `cga-mcp-server` MAY be used only after relay is unavailable, and the fallback reason MUST be documented in task or validation notes."
+- **CGA Relay-First Execution Policy**: "All ContextGraph MCP retrieval, progress-reporting, and integration operations MUST attempt `cga-relay` first. `cga-mcp-server` MAY be used for non-indexing compatibility only after relay is unavailable, and the fallback reason MUST be documented in task or validation notes."
+- **Mandatory CGA-Relay Indexing**: "All ADC-compliant projects MUST complete ContextGraph indexing through `cga-relay`, including initial full-project indexing, incremental indexing, and `index_repo_changes(repo_path)`. `cga-mcp-server` fallback MAY document a relay outage, but it MUST NOT be treated as successful indexing completion."
+- **Mandatory CGA-Relay Change Aggregation**: "All ADC-compliant projects MUST aggregate project change information into CGA through `cga-relay`, including change summaries, modified-file indexing metadata, progress updates, validation evidence, release events, blockers, risks, and PR/PBI metadata. Direct CGA API writes or fallback MCP writes MAY document relay outages, but they MUST NOT be treated as official change reporting completion."
 - **Runtime-Neutral MCP Rule**: "CGA MCP integration MUST be endpoint-first and language-agnostic by default. Do not require a Node-specific local entrypoint unless the target repository explicitly ships one."
 - **Default CGA Relay Endpoint**: "For the local dev CGA API profile, route `cga-relay` to the SSE MCP endpoint `http://localhost:18001/mcp/sse` with `Authorization` and `X-Project-ID` headers unless the deployment advertises a dedicated relay endpoint."
-- **ContextGraph Bootstrap Indexing**: "After integrating ContextGraph Edge Agent and CGA relay for a project, you MUST initialize one full-project index through ContextGraph before executing feature tasks. Subsequent updates MUST use incremental indexing on changed files."
-- **CGA Progress Reporting and Change Indexing**: "Projects SHOULD periodically report service starts, feature milestones, validation runs, and releases to CGA, and MUST run `index_repo_changes(repo_path)` through `cga-relay` first after meaningful source, documentation, configuration, or test changes, falling back to `cga-mcp-server` only when relay is unavailable and documented."
+- **ContextGraph Bootstrap Indexing**: "After integrating ContextGraph Edge Agent and CGA relay for a project, you MUST initialize one full-project index through `cga-relay` before executing feature tasks. Subsequent updates MUST use incremental indexing on changed files through `cga-relay`."
+- **CGA Progress Reporting and Change Indexing**: "Projects MUST report service starts, feature milestones, validation runs, releases, blockers, risks, and other meaningful change events to CGA through `cga-relay`, and MUST run `index_repo_changes(repo_path)` through `cga-relay` after meaningful source, documentation, configuration, or test changes. If relay is unavailable, record blocked change aggregation and retry; do not count direct API or `cga-mcp-server` fallback as official completion."
 - **ContextGraph Policy Rule**: "Use ContextGraph Edge Agent workspace files (`.adc/contextgraph-edge-agent/tasks/`, `.adc/contextgraph-edge-agent/scratchpad/`) for orchestration state only. Canonical requirements and architecture decisions MUST remain in planning/standards/knowledge files."
 - **ContextGraph Execution Rule**: "ContextGraph MCP integrations are for retrieval/indexing and external context operations. Local build/test/deploy execution MUST remain on native project tooling."
 - **ContextGraph Secret Rule**: "ContextGraph credentials (`CONTEXTGRAPH_PROJECT_ID`, `CONTEXTGRAPH_MCP_TOKEN`, `CONTEXTGRAPH_EDGE_AGENT_TOKEN`) MUST be injected through environment variables and MUST NOT be committed in tracked files."

@@ -18,7 +18,6 @@ Before starting the application, register with the ContextGraph ecosystem:
 # 2. Configure ContextGraph environment variables
 echo "CONTEXTGRAPH_MCP_SERVER_URL=http://localhost:18001/mcp/sse" >> .env
 echo "CONTEXTGRAPH_RELAY_URL=http://localhost:18001/mcp/sse" >> .env
-echo "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity" >> .env
 echo "CONTEXTGRAPH_INDEXING_POLICY=auto-incremental" >> .env
 echo "CONTEXTGRAPH_EDGE_AGENT_TOKEN=<token-from-cga-admin>" >> .env
 echo "CONTEXTGRAPH_PROJECT_ID=<project-id-from-cga-admin>" >> .env
@@ -29,20 +28,20 @@ After ContextGraph Edge Agent and CGA relay are integrated, initialize a full re
 ```text
 Required one-time bootstrap indexing flow
 1) Ensure `mcp-servers.json` contains the `cga-relay` endpoint profile before `cga-mcp-server`, and both profiles receive project context from environment variables.
-2) Run a full-project indexing call through ContextGraph MCP using:
+2) Run a full-project indexing call through `cga-relay` using:
 	- project_id: CONTEXTGRAPH_PROJECT_ID
 	- repo_path: repository root
 	- changed_files: all tracked source and documentation files
-3) Treat indexing as successful only after the ContextGraph service returns a successful completion status.
-4) Treat `cga-relay` as the mandatory first-attempt MCP profile for indexing, retrieval, progress reporting, and ContextGraph integration calls.
-5) Configure periodic work briefing reports for service starts, feature milestones, validation runs, and releases.
+3) Treat indexing as successful only after `cga-relay` and the ContextGraph service return a successful completion status.
+4) Treat `cga-relay` as the mandatory and only official MCP profile for indexing and project change information aggregation, and as the mandatory first-attempt MCP profile for retrieval and other ContextGraph integration calls.
+5) Configure relay-routed work briefing reports for service starts, feature milestones, validation runs, releases, blockers, risks, and PR/PBI metadata.
 ```
 
-For all later changes, MUST run `index_repo_changes(repo_path)` through `cga-relay` first, falling back to `cga-mcp-server` only when relay is unavailable and the fallback reason is documented, so modified source, documentation, configuration, and test content is indexed automatically.
+For all later changes, MUST run `index_repo_changes(repo_path)` through `cga-relay`, so modified source, documentation, configuration, and test content is indexed automatically through the required relay path. Also publish a compact change summary, validation/progress event, and relevant PR/PBI metadata through `cga-relay` so CGA receives the full change record. If relay is unavailable, record blocked change aggregation and retry; do not count direct API or `cga-mcp-server` fallback as official completion.
 
 ## Auto-Enable CGA Relay Profile (ADC Standard)
 
-ADC-compliant projects must keep the `cga-relay` profile enabled before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`, and must attempt `cga-relay` before any fallback ContextGraph MCP profile.
+ADC-compliant projects must keep the `cga-relay` profile enabled before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`. All official ContextGraph indexing and change information aggregation must use `cga-relay`; fallback profiles may document relay outages but must not satisfy indexing or change reporting completion.
 
 ```text
 Quick enable checklist for downstream projects
@@ -55,7 +54,7 @@ Quick enable checklist for downstream projects
 	- CONTEXTGRAPH_RELAY_URL, when the deployment advertises a dedicated relay endpoint
 4) Import the MCP file in your AI client so the server profile is loaded automatically.
 5) Run one full-project index once, then switch to incremental indexing on changed files.
-6) Confirm project progress reporting can reach `CONTEXTGRAPH_BRIEFING_API_URL` without logging raw tokens.
+6) Confirm project change reporting flows through `cga-relay` to CGA without logging raw tokens.
 ```
 
 ## Local Development Setup

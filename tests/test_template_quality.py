@@ -61,13 +61,14 @@ def test_security_convention_requires_pqc_cnsa2_communications() -> None:
         "default to ML-DSA-87",
         "PQC/CNSA 2.0 communications policy applied",
         "CGA relay-first policy applied",
-        "apply the CGA relay-first policy",
+        "project change information aggregation completed through `cga-relay`",
+        "ContextGraph indexing and project change information aggregation completed through `cga-relay`",
         "PQC/CNSA 2.0 baseline",
         "| **PQC** | Post-Quantum Cryptography",
         "| **CNSA 2.0** | Commercial National Security Algorithm Suite 2.0",
         "mandatory PQC/CNSA 2.0 communication baseline",
-        "**Version:** 1.1.25",
-        "**Date:** 2026-06-12 (mandatory CGA relay-first policy)",
+        "**Version:** 1.1.27",
+        "**Date:** 2026-06-15 (mandatory CGA-Relay change aggregation policy)",
     ]
     combined = "\n".join(
         [
@@ -213,7 +214,7 @@ def test_contextgraph_mcp_template_uses_cga_relay_first_with_local_dev_sse_endpo
         '"Authorization": "Bearer ${CONTEXTGRAPH_MCP_TOKEN}"',
         '"X-Project-ID": "${CONTEXTGRAPH_PROJECT_ID}"',
         '"CONTEXTGRAPH_RELAY_URL": "${CONTEXTGRAPH_RELAY_URL}"',
-        "Mandatory relay-first Context Graph Agent (CGA) relay endpoint profile",
+        "Mandatory Context Graph Agent (CGA) relay endpoint profile",
         "Context Graph Agent (CGA) MCP Server fallback endpoint profile",
     ]
     for entry in required_mcp_entries:
@@ -238,7 +239,7 @@ def test_cga_is_formally_defined_as_context_graph_agent() -> None:
         "Context Graph Agent (CGA) Admin UI",
         "Context Graph Agent (CGA) relay/MCP credentials",
         "Context Graph Agent Model Context Protocol endpoint",
-        "Mandatory relay-first Context Graph Agent (CGA) relay endpoint profile",
+        "Mandatory Context Graph Agent (CGA) relay endpoint profile",
     ]
     combined = "\n".join([terminology, index, bootstrap, devops, mcp_profile, generator])
 
@@ -256,30 +257,37 @@ def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> N
     mcp_profile = _read(".templates/contextgraph-edge-agent/mcp/mcp-servers.json")
     generator = _read("src/scripts/generate-adc-template.ps1")
     onboard_skill = _read(".copilot/skills/adc-onboard/SKILL.md")
+    report_progress_skill = _read(".copilot/skills/report-progress/SKILL.md")
 
     required_entries = [
-        "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity",
         "CONTEXTGRAPH_RELAY_URL=http://localhost:18001/mcp/sse",
         "CONTEXTGRAPH_INDEXING_POLICY=auto-incremental",
         "- **Mandatory Registration**",
         "- **Automatic Relay Installation**",
         "Project bootstrap MUST automatically install or refresh the paired `cga-relay` profile",
         "Relay-First Execution Policy",
-        "All ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` first",
-        "`cga-mcp-server` MAY be used only after relay is unavailable",
+        "All ContextGraph MCP retrieval, progress-reporting, and integration operations MUST attempt `cga-relay` first",
+        "All ADC-compliant projects MUST complete ContextGraph indexing through `cga-relay`",
+        "All ADC-compliant projects MUST aggregate project change information into CGA through `cga-relay`",
+        "change summaries, modified-file indexing metadata, progress updates, validation evidence, release events, blockers, risks, and PR/PBI metadata",
+        "`cga-mcp-server` fallback MAY document a relay outage",
+        "MUST NOT be treated as successful indexing completion",
         "fallback reason MUST be documented",
         "Local dev MCP clients MUST route `cga-relay`",
-        "## CGA Progress Reporting and Indexing Policy",
+        "## CGA Change Aggregation, Progress Reporting, and Indexing Policy",
+        "Projects MUST emit progress and change reports to CGA through `cga-relay`",
         "workassist_record_activity",
         "index_repo_changes(repo_path)",
-        "MUST run `index_repo_changes(repo_path)` through `cga-relay` first",
+        "MUST run `index_repo_changes(repo_path)` through `cga-relay`",
+        "record blocked change aggregation and retry",
         "Register every project in Context Graph Agent (CGA)",
-        "Periodically report project progress to CGA",
-        "Mandatory relay-first Context Graph Agent (CGA) relay endpoint profile",
-        "mandatory relay-first `cga-relay` workflow",
+        "Report all meaningful project change information to CGA through `cga-relay`",
+        "Mandatory Context Graph Agent (CGA) relay endpoint profile",
+        "mandatory `cga-relay` workflow",
+        "Do not POST directly to CGA APIs except when explicitly implementing or debugging `cga-relay` itself",
         "cga-relay",
     ]
-    combined = "\n".join([bootstrap, devops, prompt_rules, index, mcp_profile, generator, onboard_skill])
+    combined = "\n".join([bootstrap, devops, prompt_rules, index, mcp_profile, generator, onboard_skill, report_progress_skill])
 
     for entry in required_entries:
         assert entry in combined
@@ -287,6 +295,15 @@ def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> N
     forbidden_entries = [
         "Project bootstrap SHOULD automatically install or refresh the paired `cga-relay` profile",
         "agents SHOULD run `index_repo_changes(repo_path)` through `cga-relay` first",
+        "falling back to `cga-mcp-server` only when relay is unavailable",
+        "All ContextGraph MCP retrieval, indexing, progress-reporting, and integration operations MUST attempt `cga-relay` first",
+        "`cga-mcp-server` MAY be used only after relay is unavailable",
+        "MUST run `index_repo_changes(repo_path)` through `cga-relay` first",
+        "Projects SHOULD emit periodic progress reports to CGA",
+        "Periodically report project progress to CGA",
+        "Send POST requests to /api/project/work-briefing/activity",
+        "Invoke-RestMethod -Method Post",
+        "mandatory and only official MCP profile for indexing, and as the mandatory first-attempt MCP profile",
         "Local dev MCP clients SHOULD route `cga-relay`",
         "enabled as the preferred profile",
         "prefer CGA relay wiring",
@@ -307,7 +324,6 @@ def test_generate_adc_template_script_contains_default_web_app_policies() -> Non
         "Vanta.js net-style background",
         "FastAPI Default",
         "PostgreSQL plus `pgvector`",
-        "CONTEXTGRAPH_BRIEFING_API_URL=http://localhost:18001/api/project/work-briefing/activity",
         "CONTEXTGRAPH_RELAY_URL=http://localhost:18001/mcp/sse",
         "cga-relay",
         "index_repo_changes(repo_path)",
@@ -317,18 +333,26 @@ def test_generate_adc_template_script_contains_default_web_app_policies() -> Non
         assert entry in script
 
 
-def test_generate_adc_template_script_reports_template_generation_to_contextgraph() -> None:
+def test_generate_adc_template_script_avoids_direct_contextgraph_reporting() -> None:
     script = _read("src/scripts/generate-adc-template.ps1")
 
     required_entries = [
-        "Send-ContextGraphWorkBriefingActivity",
-        "template_generation",
         "CONTEXTGRAPH_PROJECT_ID",
-        "/api/project/work-briefing/activity",
+        "CONTEXTGRAPH_RELAY_URL=http://localhost:18001/mcp/sse",
+        "Report all meaningful project change information to CGA through `cga-relay`",
     ]
 
     for entry in required_entries:
         assert entry in script
+
+    forbidden_entries = [
+        "Send-ContextGraphWorkBriefingActivity",
+        "Invoke-RestMethod -Uri",
+        "template_generation",
+        "Get-ContextGraphWorkBriefingConfig",
+    ]
+    for entry in forbidden_entries:
+        assert entry not in script
 
 
 def test_adc_skills_use_current_contextgraph_standard() -> None:
@@ -341,7 +365,7 @@ def test_adc_skills_use_current_contextgraph_standard() -> None:
         "cga-relay",
         "cga-mcp-server",
         "Context Graph Agent (CGA)",
-        "CONTEXTGRAPH_BRIEFING_API_URL",
+        "CONTEXTGRAPH_RELAY_URL",
         "index_repo_changes(repo_path)",
         "FastAPI",
         "PostgreSQL with `pgvector`",

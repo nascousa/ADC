@@ -13,7 +13,7 @@
         "CONTEXTGRAPH_PROJECT_ID": "${CONTEXTGRAPH_PROJECT_ID}",
         "CONTEXTGRAPH_RELAY_URL": "${CONTEXTGRAPH_RELAY_URL}"
       },
-      "description": "Mandatory relay-first Context Graph Agent (CGA) relay endpoint profile for ADC projects; attempt before cga-mcp-server"
+      "description": "Mandatory Context Graph Agent (CGA) relay endpoint profile for ADC projects; required for all ContextGraph indexing and project change information aggregation, and attempted before cga-mcp-server for non-indexing MCP operations"
     },
     "cga-mcp-server": {
       "transport": "http",

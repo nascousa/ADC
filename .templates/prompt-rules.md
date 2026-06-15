@@ -32,9 +32,9 @@
 ## ContextGraph Use Policy
 - Use `contextgraph-edge-agent/` for local task orchestration and session context only.
 - Use `mcp-servers.json` and ContextGraph MCP endpoints for indexed retrieval/integration workflows only.
-- Ensure `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST contain `cga-relay` before `cga-mcp-server`, with `cga-relay` enabled and attempted first while `cga-mcp-server` is retained only as fallback for ADC-compliant repositories.
+- Ensure `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` MUST contain `cga-relay` before `cga-mcp-server`, with `cga-relay` enabled as the mandatory ContextGraph indexing and change aggregation path while `cga-mcp-server` is retained only as non-indexing fallback for ADC-compliant repositories.
 - Register every project in Context Graph Agent (CGA) and MUST automatically install or refresh the paired `cga-relay` profile before substantial feature work.
-- Periodically report project progress to CGA and MUST run `index_repo_changes(repo_path)` through `cga-relay` first after meaningful source, documentation, configuration, or test changes; use `cga-mcp-server` only when relay is unavailable and document the fallback reason.
+- Report all meaningful project change information to CGA through `cga-relay`, including change summaries, progress, validation evidence, release events, blockers, risks, and PR/PBI metadata. Also MUST run `index_repo_changes(repo_path)` through `cga-relay` after meaningful source, documentation, configuration, or test changes; if relay is unavailable, record blocked change aggregation and retry rather than counting direct API or `cga-mcp-server` fallback as successful completion.
 - Do not assume a Node-specific local MCP bootstrap; prefer endpoint-first MCP profiles and keep integration language/runtime-agnostic unless the repository explicitly provides a local server implementation.
 - ContextGraph MCP must not replace local compile, lint, unit test, or integration test execution.
 - Treat scratchpad/task outputs as operational context, not canonical product truth.
@@ -47,7 +47,7 @@
 - For non-trivial coding tasks, perform ContextGraph retrieval before editing files.
 - Prefer FalkorDB Cypher traversal over Python loops for impact graph search.
 - Required pre-edit sequence: `contextgraph_index_incremental` -> `contextgraph_query_impact_graph` -> `get_optimized_context` -> `contextgraph_fetch_minimal_code`.
-- Use incremental indexing for changed files; avoid full reindex for routine tasks.
+- Use incremental indexing for changed files through `cga-relay`; avoid full reindex for routine tasks.
 - Retrieve context in order: impact graph -> optimized context -> minimal code.
 - Use symbol-scoped or change-scoped queries; avoid whole-repository prompts.
 - Start with conservative budgets (`800-1500`) and expand only when evidence is insufficient.
