@@ -24,6 +24,28 @@ def test_prompt_rules_has_core_quality_sections() -> None:
         assert section in content
 
 
+def test_pr_governance_gates_include_diff_dependency_secret_permission_and_validation_checks() -> None:
+    pr_checklist = _read(".templates/standards/checklists/pr-review.md")
+    root_pr_template = _read(".github/pull_request_template.md")
+    template_pr_template = _read(".templates/.github/pull_request_template.md")
+    root_policy_ci = _read(".github/workflows/policy-ci.yml")
+    template_policy_ci = _read(".templates/.github/workflows/policy-ci.yml")
+
+    required_entries = [
+        "Read the actual diff",
+        "No hardcoded secrets",
+        "All new dependencies are declared and pinned",
+        "GitHub Actions permissions are least privilege",
+        "Validation evidence",
+    ]
+    combined = "\n".join(
+        [pr_checklist, root_pr_template, template_pr_template, root_policy_ci, template_policy_ci]
+    )
+
+    for entry in required_entries:
+        assert entry in combined
+
+
 def test_security_convention_has_patch_and_update_strategies() -> None:
     content = _read(".templates/standards/conventions/security.md")
 
@@ -61,14 +83,15 @@ def test_security_convention_requires_pqc_cnsa2_communications() -> None:
         "default to ML-DSA-87",
         "PQC/CNSA 2.0 communications policy applied",
         "CGA relay-first policy applied",
+        "local CGA-Relay executable sync was attempted first when available",
         "project change information aggregation completed through `cga-relay`",
         "ContextGraph indexing and project change information aggregation completed through `cga-relay`",
         "PQC/CNSA 2.0 baseline",
         "| **PQC** | Post-Quantum Cryptography",
         "| **CNSA 2.0** | Commercial National Security Algorithm Suite 2.0",
         "mandatory PQC/CNSA 2.0 communication baseline",
-        "**Version:** 1.1.27",
-        "**Date:** 2026-06-15 (mandatory CGA-Relay change aggregation policy)",
+        "**Version:** 1.1.29",
+        "**Date:** 2026-07-01 (PR governance gates)",
     ]
     combined = "\n".join(
         [
@@ -269,6 +292,13 @@ def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> N
         "All ContextGraph MCP retrieval, progress-reporting, and integration operations MUST attempt `cga-relay` first",
         "All ADC-compliant projects MUST complete ContextGraph indexing through `cga-relay`",
         "All ADC-compliant projects MUST aggregate project change information into CGA through `cga-relay`",
+        "Local CGA-Relay Executable Priority",
+        "For project status synchronization, agents MUST prefer the local CGA-Relay release executable when available",
+        "D:\\Repos\\ContextGraphAdmin\\src\\cga-relay\\target\\release\\cga-relay.exe",
+        "CGA_RELAY_EXE",
+        "sync --config %USERPROFILE%\\.cga\\agent.env --namespace account --project-tag <project_tag>",
+        "cga-relay.exe sync --config %USERPROFILE%\\.cga\\agent.env --namespace account --project-tag <project_tag>",
+        "Do not count direct CGA API calls or `cga-mcp-server` writes as official project status synchronization",
         "change summaries, modified-file indexing metadata, progress updates, validation evidence, release events, blockers, risks, and PR/PBI metadata",
         "`cga-mcp-server` fallback MAY document a relay outage",
         "MUST NOT be treated as successful indexing completion",
@@ -307,6 +337,7 @@ def test_contextgraph_policy_requires_registration_reporting_and_indexing() -> N
         "Local dev MCP clients SHOULD route `cga-relay`",
         "enabled as the preferred profile",
         "prefer CGA relay wiring",
+        "For project status synchronization, use the `cga-relay` MCP profile first",
     ]
     for entry in forbidden_entries:
         assert entry not in combined

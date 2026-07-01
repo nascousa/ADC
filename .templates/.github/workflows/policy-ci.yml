@@ -6,6 +6,9 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   quality-security:
     runs-on: ubuntu-latest
@@ -67,5 +70,30 @@ jobs:
 
           echo "$PR_BODY" | grep -qi "Data policy applied for pgvector/sqlite-vec/graph" || {
             echo "Missing data policy checklist item in PR body."
+            exit 1
+          }
+
+          echo "$PR_BODY" | grep -qi "Read the actual diff" || {
+            echo "Missing actual diff review checklist item in PR body."
+            exit 1
+          }
+
+          echo "$PR_BODY" | grep -qi "All new dependencies are declared and pinned" || {
+            echo "Missing dependency declaration and pinning checklist item in PR body."
+            exit 1
+          }
+
+          echo "$PR_BODY" | grep -qi "No hardcoded secrets" || {
+            echo "Missing hardcoded secrets checklist item in PR body."
+            exit 1
+          }
+
+          echo "$PR_BODY" | grep -qi "GitHub Actions permissions are least privilege" || {
+            echo "Missing GitHub Actions least-privilege permissions checklist item in PR body."
+            exit 1
+          }
+
+          echo "$PR_BODY" | grep -qi "Validation evidence" || {
+            echo "Missing validation evidence checklist item in PR body."
             exit 1
           }

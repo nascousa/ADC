@@ -1,15 +1,15 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.27
+**Version:** 1.1.29
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-06-15 (mandatory CGA-Relay change aggregation policy)
+**Date:** 2026-07-01 (PR governance gates)
 
 ## 1. Introduction
 
 The **Autonomous Development Constitution (ADC)** is a standardized framework designed to provide highly structured context for large codebases, AI assistants (agents), and human developers. 
 
-ADC now also requires project change information to be aggregated into Context Graph Agent (CGA) through CGA-Relay when ContextGraph project credentials are configured. This includes indexing, change summaries, progress updates, validation evidence, release events, blockers, risks, and related PR/PBI metadata.
+ADC now also requires project change information to be aggregated into Context Graph Agent (CGA) through CGA-Relay when ContextGraph project credentials are configured. This includes indexing, change summaries, progress updates, validation evidence, release events, blockers, risks, and related PR/PBI metadata. When the local CGA-Relay release executable is available, project status synchronization MUST use that executable first, before MCP profile or direct API fallback paths.
 
 The core philosophy of ADC is to manage the "soul of the project" (architecture, conventions, domain knowledge, and AI instructions) alongside the "body of the project" (the source code). It acts as the absolute **"Digital Constitution"** of the repository.
 

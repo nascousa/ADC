@@ -184,6 +184,7 @@ Carry these defaults into the target project's ADC files unless project-local po
 - For webpage testing, default to VS Code built-in browser tooling; use external Browser Agent only for explicit exceptions.
 - For frontend visualization, use `d3-tube-map` for dynamic metro-style state-machine indicators, AntV or ECharts for normal node/edge graphs, and `sigma` for 2.5D graph/network views.
 - ContextGraph MCP is for retrieval, indexing, progress reporting, and external context operations; it must not replace local build, lint, unit test, or integration test execution.
+- For project status synchronization, prefer the local CGA-Relay release executable first when available (`CGA_RELAY_EXE` or `D:\Repos\ContextGraphAdmin\src\cga-relay\target\release\cga-relay.exe`) and run `sync --config %USERPROFILE%\.cga\agent.env --namespace account --project-tag <project_tag>` before MCP profile or fallback paths.
 - Projects MUST report meaningful project change information to CGA through `cga-relay`, including change summaries, progress, validation evidence, release events, blockers, risks, and PR/PBI metadata. Projects also MUST run `index_repo_changes(repo_path)` through `cga-relay` after meaningful source, documentation, configuration, or test changes; if relay is unavailable, record blocked change aggregation and retry rather than counting direct API or `cga-mcp-server` fallback as successful completion.
 
 ### 6. Wire Tooling And Triggers
@@ -192,7 +193,7 @@ Carry these defaults into the target project's ADC files unless project-local po
 - Add IDE trigger files that instruct tools to load `.adc/index.md`, `.adc/prompt-rules.md`, and relevant standards.
 - Add `.adcignore` to exclude `.env`, secrets, build output, dependency folders, logs, caches, and large generated assets.
 - Add or refresh `.adc/contextgraph-edge-agent/mcp/mcp-servers.json` with a `cga-relay` endpoint profile before the fallback `cga-mcp-server` profile, and document `cga-relay` as the mandatory indexing and change aggregation MCP profile. Use environment variable placeholders only; do not write token values into tracked files.
-- Include ContextGraph progress reporting and indexing guidance: `CONTEXTGRAPH_RELAY_URL`, `CONTEXTGRAPH_INDEXING_POLICY=auto-incremental`, relay-routed reporting through `cga-relay`, and `index_repo_changes(repo_path)` after meaningful changes.
+- Include ContextGraph progress reporting and indexing guidance: `CONTEXTGRAPH_RELAY_URL`, `CONTEXTGRAPH_INDEXING_POLICY=auto-incremental`, local executable sync through `cga-relay.exe`, relay-routed reporting through `cga-relay`, and `index_repo_changes(repo_path)` after meaningful changes.
 
 ### 7. Validate
 

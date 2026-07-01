@@ -15,5 +15,7 @@
 - **2026-06-12**: Elevated CGA relay precedence to a mandatory relay-first policy for ContextGraph MCP operations before `cga-mcp-server`, with fallback reasons documented; the 2026-06-15 amendment supersedes indexing fallback behavior.
 - **2026-06-15**: Strengthened ADC indexing governance so all ADC-compliant projects MUST complete initial, incremental, and change indexing through `cga-relay`; `cga-mcp-server` fallback can document relay outages but does not count as official indexing completion.
 - **2026-06-15**: Broadened CGA relay governance so all ADC-compliant projects MUST aggregate any meaningful project change information into CGA through `cga-relay`, including change summaries, indexing metadata, progress, validation, release, blocker, risk, and PR/PBI events.
+- **2026-07-01**: Added local CGA-Relay executable priority for project status synchronization. When the release executable is available, agents MUST run `sync --config %USERPROFILE%\.cga\agent.env --namespace account --project-tag <project_tag>` before MCP profile or fallback paths.
+- **2026-07-01**: Added PR governance gates requiring actual diff review, declared and pinned dependencies, no hardcoded secrets, least-privilege GitHub Actions permissions, and explicit validation evidence in ADC PR checklists/templates.
 
 

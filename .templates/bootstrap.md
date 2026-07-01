@@ -39,6 +39,15 @@ Required one-time bootstrap indexing flow
 
 For all later changes, MUST run `index_repo_changes(repo_path)` through `cga-relay`, so modified source, documentation, configuration, and test content is indexed automatically through the required relay path. Also publish a compact change summary, validation/progress event, and relevant PR/PBI metadata through `cga-relay` so CGA receives the full change record. If relay is unavailable, record blocked change aggregation and retry; do not count direct API or `cga-mcp-server` fallback as official completion.
 
+For project status synchronization, prefer the local CGA-Relay release executable before MCP profile or fallback paths. Use `CGA_RELAY_EXE` when configured; otherwise, on the standard Windows CGA workstation, use `D:\Repos\ContextGraphAdmin\src\cga-relay\target\release\cga-relay.exe`:
+
+```powershell
+$relayExe = if ($env:CGA_RELAY_EXE) { $env:CGA_RELAY_EXE } else { "D:\Repos\ContextGraphAdmin\src\cga-relay\target\release\cga-relay.exe" }
+& $relayExe sync --config "$env:USERPROFILE\.cga\agent.env" --namespace account --project-tag "<project_tag>"
+```
+
+If the executable is missing or sync fails due to authentication or connectivity, record blocked change aggregation in `.adc/contextgraph-edge-agent/scratchpad/session.md`, refresh relay login/configuration, and retry. Do not count direct CGA API calls or `cga-mcp-server` writes as official project status synchronization.
+
 ## Auto-Enable CGA Relay Profile (ADC Standard)
 
 ADC-compliant projects must keep the `cga-relay` profile enabled before the fallback `cga-mcp-server` profile in `.adc/contextgraph-edge-agent/mcp/mcp-servers.json`. All official ContextGraph indexing and change information aggregation must use `cga-relay`; fallback profiles may document relay outages but must not satisfy indexing or change reporting completion.

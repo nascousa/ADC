@@ -14,6 +14,7 @@ Goal:
 - Publish accurate, structured progress and change updates into CGA through `cga-relay` so project status can be queried and summarized consistently.
 
 Primary relay path:
+- For project status synchronization, prefer the local CGA-Relay release executable first when available: `sync --config %USERPROFILE%\.cga\agent.env --namespace account --project-tag <project_tag>`.
 - Use the `cga-relay` MCP profile first.
 - Publish activity through `workassist_record_activity` or the relay-approved change reporting tool.
 - Treat direct CGA HTTP APIs as relay implementation details, not the agent reporting path.
@@ -78,6 +79,7 @@ Project scope behavior:
 - Put evidence and links in body_text and source_url.
 
 3. Publish events to CGA through CGA-Relay
+- For project status synchronization, first use `CGA_RELAY_EXE` or the standard Windows release executable at `D:\Repos\ContextGraphAdmin\src\cga-relay\target\release\cga-relay.exe` with `sync --config %USERPROFILE%\.cga\agent.env --namespace account --project-tag <project_tag>`.
 - Use the `cga-relay` MCP profile and `workassist_record_activity` or the relay-approved change reporting tool.
 - Include project_id only from authenticated project context and never print raw tokens.
 
