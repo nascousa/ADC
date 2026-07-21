@@ -24,6 +24,59 @@ def test_prompt_rules_has_core_quality_sections() -> None:
         assert section in content
 
 
+def test_external_engagement_convention_requires_all_selection_and_promotion_gates() -> None:
+    convention = _read(".templates/standards/conventions/external-engagement.md")
+
+    required_entries = [
+        "## Mandatory Four-Gate Thread Selection",
+        "All four gates MUST pass",
+        "Direct Relevance",
+        "Current Heat",
+        "Meaningful Reach",
+        "Natural Project Fit",
+        "## Discussion-First Participation",
+        "The first response MUST stand on its own",
+        "Disclose the relationship",
+        "At most one project link",
+        "Respect platform rules",
+        "Do not use repetitive templates, metric dumping, cold direct messages, or cross-post spam",
+    ]
+
+    for entry in required_entries:
+        assert entry in convention
+
+
+def test_external_engagement_policy_propagates_to_generated_projects() -> None:
+    convention = _read(".templates/standards/conventions/external-engagement.md")
+    prompt_rules = _read(".templates/prompt-rules.md")
+    generator = _read("src/scripts/generate-adc-template.ps1")
+    onboard_skill = _read(".copilot/skills/adc-onboard/SKILL.md")
+    update_skill = _read(".copilot/skills/adc-update/SKILL.md")
+    amendments = _read(".templates/knowledge/amendments.md")
+    readme = _read("README.md")
+
+    assert ".adc/standards/conventions/external-engagement.md" in prompt_rules
+    for entry in [
+        '"conventions\\external-engagement.md"',
+        "All four gates MUST pass",
+        "At most one project link",
+    ]:
+        assert entry in generator
+    generated_convention = generator.split(
+        '"conventions\\external-engagement.md" = @\'\n', 1
+    )[1].split("\n'@;", 1)[0]
+    assert generated_convention.strip() == convention.strip()
+    for entry in [
+        "external-engagement.md",
+        ".adc/standards/conventions/external-engagement.md",
+    ]:
+        assert entry in onboard_skill
+    assert ".adc/standards/conventions/external-engagement.md" in update_skill
+    assert "mandatory four-gate thread selection" in amendments
+    assert "**Version:** 1.2.0" in readme
+    assert "**Date:** 2026-07-21 (external engagement governance)" in readme
+
+
 def test_pr_governance_gates_include_diff_dependency_secret_permission_and_validation_checks() -> None:
     pr_checklist = _read(".templates/standards/checklists/pr-review.md")
     root_pr_template = _read(".github/pull_request_template.md")
@@ -90,8 +143,8 @@ def test_security_convention_requires_pqc_cnsa2_communications() -> None:
         "| **PQC** | Post-Quantum Cryptography",
         "| **CNSA 2.0** | Commercial National Security Algorithm Suite 2.0",
         "mandatory PQC/CNSA 2.0 communication baseline",
-        "**Version:** 1.1.29",
-        "**Date:** 2026-07-01 (PR governance gates)",
+        "**Version:** 1.2.0",
+        "**Date:** 2026-07-21 (external engagement governance)",
     ]
     combined = "\n".join(
         [

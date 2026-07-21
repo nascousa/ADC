@@ -154,6 +154,7 @@ If the requested change is only a skill file, perform frontmatter/structure vali
 - Frontend/admin design should default to the `https://admin-demo.vuestic.dev` density and navigation rhythm unless a project-local design system supersedes it.
 - Frontend visualization defaults: `d3-tube-map` for dynamic metro-style state-machine indicators, AntV or ECharts for ordinary node/edge graphs, and `sigma` for 2.5D graph/network views.
 - Webpage testing defaults to VS Code built-in browser tooling; external Browser Agent usage requires an explicit exception reason.
+- External community participation and project promotion follow `.adc/standards/conventions/external-engagement.md`: all four selection gates are mandatory, participation is discussion-first, and project mentions require transparent affiliation disclosure.
 
 ## Safe Output Format
 

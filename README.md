@@ -1,15 +1,17 @@
 # Autonomous Development Constitution (ADC)
 
-**Version:** 1.1.29
+**Version:** 1.2.0
 **Status:** Published  
 **Author:** Nate Scott  
-**Date:** 2026-07-01 (PR governance gates)
+**Date:** 2026-07-21 (external engagement governance)
 
 ## 1. Introduction
 
 The **Autonomous Development Constitution (ADC)** is a standardized framework designed to provide highly structured context for large codebases, AI assistants (agents), and human developers. 
 
 ADC now also requires project change information to be aggregated into Context Graph Agent (CGA) through CGA-Relay when ContextGraph project credentials are configured. This includes indexing, change summaries, progress updates, validation evidence, release events, blockers, risks, and related PR/PBI metadata. When the local CGA-Relay release executable is available, project status synchronization MUST use that executable first, before MCP profile or direct API fallback paths.
+
+ADC also governs external community participation and project promotion. A thread is eligible only when direct relevance, current heat, meaningful reach, and natural project fit all pass; participation must remain discussion-first, transparent about affiliation, evidence-backed, and compliant with platform rules.
 
 The core philosophy of ADC is to manage the "soul of the project" (architecture, conventions, domain knowledge, and AI instructions) alongside the "body of the project" (the source code). It acts as the absolute **"Digital Constitution"** of the repository.
 
@@ -62,7 +64,8 @@ Here is the standard structure of a `.adc/` directory:
 │   │   ├── observability.md  # Logging formats, metrics, and distributed tracing rules.
 │   │   ├── security.md       # Secure coding practices, CVE/CVSS limits, and vulnerability management.
 │   │   ├── devops.md         # Docker, CI/CD, and deployment conventions (e.g., container constraints).
-│   │   └── testing.md        # Strict testing guidelines (unit/e2e coverage, mocking rules).
+│   │   ├── testing.md        # Strict testing guidelines (unit/e2e coverage, mocking rules).
+│   │   └── external-engagement.md # Community participation and transparent project promotion rules.
 │   ├── checklists/           # [Optional] Pre-flight checklists the AI must complete before specific actions (e.g., PR creation).
 │   │   └── pr-review.md      # Example: Code review checklist.
 │   └── runbooks/             # [Optional] Troubleshooting guides and recovery procedures for common local/CI errors.
@@ -252,14 +255,23 @@ This file enforces your team's quality assurance policies and testing methodolog
 - **LOC Coverage (Line of Code Coverage)**: "Define LOC Coverage as `Executed Coverable Lines / Total Coverable Lines * 100`. Coverable lines include executable statements and exclude blanks, comments, generated code, and non-executable declarations."
 - **Mocking**: "When writing tests for the backend API, you MUST use our standardized mocking factory instead of hitting the real database."
 
-### 3.18 `diagrams/` (Living Architecture Documentation)
+### 3.18 `conventions/external-engagement.md` (Community Participation and Promotion)
+This convention governs public and semi-public engagement performed on behalf of any project, product, article, benchmark, or repository.
+**Core constraints:**
+- **Four-Gate Selection**: Direct relevance, current heat, meaningful reach, and natural project fit MUST all pass. If one fails, skip the thread.
+- **Discussion First**: The first response must provide useful standalone value without depending on a project mention or link.
+- **Transparent Introduction**: Mention a project only when the conversation makes it directly useful, and disclose the relationship at the first mention.
+- **Evidence and Link Discipline**: Support technical claims with reproducible evidence and share at most one project link unless another participant requests a different artifact.
+- **Platform Integrity**: Respect platform and community rules, avoid burst posting and repetitive templates, and never manufacture or coordinate deceptive engagement.
+
+### 3.19 `diagrams/` (Living Architecture Documentation)
 To ensure that human developers always have an accurate mental model of the system, the `diagrams/` directory MUST remain a "living" documentation hub.
 **Example constraints to include:**
 - **Auto-Update Requirement**: "Whenever a new core module is created, an API endpoint is added, or the database schema is modified, you MUST automatically generate or update the corresponding `.mmd` (Mermaid) diagrams in the `.adc/knowledge/diagrams/` directory."
 - **Format Consistency**: "All diagrams MUST be written in Mermaid format so that they can be directly rendered in standard Markdown viewers and easily manipulated by AI."
 - **Diagram Types**: "Maintain at least three baseline diagrams: `architecture.mmd` (high-level system design), `data-flow.mmd` (how data moves between services), and `schema.mmd` (database entity relationships)."
 
-### 3.19 `mcp/` (Model Context Protocol Configurations)
+### 3.20 `mcp/` (Model Context Protocol Configurations)
 To achieve true project portability for AI Agents, the project must ship with its own toolsets. The `.adc/mcp/` directory stores the configuration files required to bootstrap **Model Context Protocol (MCP)** servers.
 - **Portability**: "When cloning this repository on a new machine, the user or AI can directly import `.adc/mcp/mcp-servers.json` into their local AI client (like Cursor or Claude Desktop) to instantly gain access to the project's dedicated database connections, API wrappers, or internal corporate context tools."
 - **Constraint**: "Any new external integrations (e.g., adding a PostgreSQL database) MUST be accompanied by an update to the MCP configuration so that future AI agents inherit the ability to query that database directly."
@@ -277,11 +289,11 @@ To achieve true project portability for AI Agents, the project must ship with it
 - **ContextGraph Execution Rule**: "ContextGraph MCP integrations are for retrieval/indexing and external context operations. Local build/test/deploy execution MUST remain on native project tooling."
 - **ContextGraph Secret Rule**: "ContextGraph credentials (`CONTEXTGRAPH_PROJECT_ID`, `CONTEXTGRAPH_MCP_TOKEN`, `CONTEXTGRAPH_EDGE_AGENT_TOKEN`) MUST be injected through environment variables and MUST NOT be committed in tracked files."
 
-### 3.20 `checklists/` (Autonomous Pre-Flight Checks)
+### 3.21 `checklists/` (Autonomous Pre-Flight Checks)
 For high-end autonomous systems, deterministic checklists prevent AI from cutting corners.
 - **Execution Rule**: "Before generating a Git commit or a Pull Request, you MUST autonomously read `.adc/checklists/pr-review.md` and verify each item (e.g., 'Are all tests passing?', 'Are resource limits defined in Docker?', 'Is the code documented?'). You MUST output a generated report confirming the checklist was completed."
 
-### 3.21 `amendments.md` (Constitutional Amendment Protocol)
+### 3.22 `amendments.md` (Constitutional Amendment Protocol)
 Since the ADC acts as the absolute Digital Constitution, altering core rules (like testing enforcement or security boundaries) requires a formalized "Constitutional Amendment" process.
 **Example constraints to include:**
 - **Amendment Proposals**: "Any change to the `.adc/` directory by an AI Agent MUST be submitted as an independent Pull Request titled prefix `[AMENDMENT]`. AI Agents are strictly forbidden from committing changes directly to the `main` branch if they affect the `.adc/` ruleset."
@@ -316,7 +328,7 @@ Run the following command in your terminal to generate the barebones ADC structu
 
 ```bash
 mkdir -p .adc/planning .adc/standards/conventions .adc/standards/checklists .adc/standards/runbooks .adc/knowledge/adr .adc/knowledge/diagrams .adc/contextgraph-edge-agent/skills .adc/contextgraph-edge-agent/mcp .adc/contextgraph-edge-agent/tasks/todo .adc/contextgraph-edge-agent/tasks/in-progress .adc/contextgraph-edge-agent/tasks/done .adc/contextgraph-edge-agent/scratchpad tests .github
-touch .adc/index.md .adc/bootstrap.md .adc/prompt-rules.md .adc/planning/status.md .adc/planning/project-roadmap.md .adc/planning/development-phases.md .adc/knowledge/glossary.md .adc/knowledge/known-issues.md .adc/knowledge/amendments.md .adc/standards/conventions/structure.md .adc/standards/conventions/frontend.md .adc/standards/conventions/backend.md .adc/standards/conventions/data-engineering.md .adc/standards/conventions/performance.md .adc/standards/conventions/observability.md .adc/standards/conventions/security.md .adc/standards/conventions/devops.md .adc/standards/conventions/testing.md .adc/contextgraph-edge-agent/mcp/mcp-servers.json .adc/standards/checklists/pr-review.md .adc/standards/runbooks/001-common-errors.md .adc/contextgraph-edge-agent/scratchpad/session.md .adc/contextgraph-edge-agent/tasks/todo/TASK-001.md .adcignore .cursorrules .windsurfrules .clinerules .roomadesrules .aider.rules .codexrules .antigravityrules .codeiumrules .codyrules .github/copilot-instructions.md
+touch .adc/index.md .adc/bootstrap.md .adc/prompt-rules.md .adc/planning/status.md .adc/planning/project-roadmap.md .adc/planning/development-phases.md .adc/knowledge/glossary.md .adc/knowledge/known-issues.md .adc/knowledge/amendments.md .adc/standards/conventions/structure.md .adc/standards/conventions/frontend.md .adc/standards/conventions/backend.md .adc/standards/conventions/data-engineering.md .adc/standards/conventions/performance.md .adc/standards/conventions/observability.md .adc/standards/conventions/security.md .adc/standards/conventions/devops.md .adc/standards/conventions/testing.md .adc/standards/conventions/external-engagement.md .adc/contextgraph-edge-agent/mcp/mcp-servers.json .adc/standards/checklists/pr-review.md .adc/standards/runbooks/001-common-errors.md .adc/contextgraph-edge-agent/scratchpad/session.md .adc/contextgraph-edge-agent/tasks/todo/TASK-001.md .adcignore .cursorrules .windsurfrules .clinerules .roomadesrules .aider.rules .codexrules .antigravityrules .codeiumrules .codyrules .github/copilot-instructions.md
 ```
 Populate these files with the core essence and rules of your project to achieve peak synergy with AI coding assistants.
 

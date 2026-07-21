@@ -6,6 +6,7 @@
 - Do not bypass safety checks in `.adc/standards/conventions/security.md`.
 - All project communications MUST follow the PQC/CNSA 2.0 baseline in `.adc/standards/conventions/security.md`.
 - Follow Test-Driven Development (TDD) in `.adc/standards/conventions/testing.md`.
+- Before external community participation or project promotion, read and follow `.adc/standards/conventions/external-engagement.md`; all four thread-selection gates MUST pass before engaging with a current or possible future promotion objective.
 - Default frontend theme and layout should closely match `https://admin-demo.vuestic.dev`, with dark theme as the default.
 - For web page design/debug tasks, use the built-in browser shared page as the default validation surface before considering external browser automation.
 - Default web applications should use FastAPI, PostgreSQL with `pgvector`, dark mode, and the login background pattern defined in `.adc/standards/conventions/frontend.md`.

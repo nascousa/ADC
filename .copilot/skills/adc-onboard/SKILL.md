@@ -87,6 +87,7 @@ Create or repair this structure at the project root:
 |   |   +-- security.md
 |   |   +-- devops.md
 |   |   +-- testing.md
+|   |   +-- external-engagement.md
 |   +-- checklists/
 |   |   +-- pr-review.md
 |   +-- runbooks/
@@ -180,6 +181,7 @@ Carry these defaults into the target project's ADC files unless project-local po
 - Default web applications should use FastAPI, PostgreSQL with `pgvector`, dark mode, and the login background pattern from `.adc/standards/conventions/frontend.md` unless project constraints explicitly override them.
 - Dashboard/admin surfaces should follow the density and navigation rhythm of `https://admin-demo.vuestic.dev` unless a project-local design system supersedes it.
 - Before adding or changing service endpoints, document the change in project ADC files and update MCP/bootstrap wiring when ContextGraph integration is affected.
+- External community participation and project promotion MUST follow `.adc/standards/conventions/external-engagement.md`; all four selection gates must pass, the first response must provide standalone value, and any later project mention must disclose the relationship.
 - For CPMD, source branches must merge into `main` and then be deleted remotely and locally.
 - For webpage testing, default to VS Code built-in browser tooling; use external Browser Agent only for explicit exceptions.
 - For frontend visualization, use `d3-tube-map` for dynamic metro-style state-machine indicators, AntV or ECharts for normal node/edge graphs, and `sigma` for 2.5D graph/network views.
